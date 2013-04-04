@@ -32,6 +32,10 @@ return array(
 
 	// application components
 	'components'=>array(
+		'phpThumb'=>array(
+		    'class'=>'ext.EPhpThumb.EPhpThumb',
+		    'options'=>array()
+		),
 		'user'=>array(
 			// enable cookie-based authentication
 			'allowAutoLogin'=>true,

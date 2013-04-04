@@ -2,6 +2,12 @@
 /* @var $this BlockController */
 /* @var $model Block */
 /* @var $form CActiveForm */
+$prices = array();
+for($i = 0; $i <= 9; $i++){
+	$p = (0.99) + $i;
+	$prices[$p.""] = $p;
+}
+print_r($prices);
 ?>
 
 <div class="form">
@@ -9,6 +15,7 @@
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'block-form',
 	'enableAjaxValidation'=>false,
+	'htmlOptions' => array('enctype' => 'multipart/form-data'),
 )); ?>
 
 	<p class="note">Fields with <span class="required">*</span> are required.</p>
@@ -23,19 +30,19 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'price'); ?>
-		<?php echo $form->textField($model,'price',array('size'=>9,'maxlength'=>9)); ?>
+		<?php echo $form->dropDownList($model,'price', $prices); ?>
 		<?php echo $form->error($model,'price'); ?>
 	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'preview'); ?>
-		<?php echo $form->textField($model,'preview',array('size'=>60,'maxlength'=>255)); ?>
+		<?php echo $form->fileField($model,'preview'); ?>
 		<?php echo $form->error($model,'preview'); ?>
 	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'public'); ?>
-		<?php echo $form->textField($model,'public'); ?>
+		<?php echo $form->checkBox($model,'public'); ?>
 		<?php echo $form->error($model,'public'); ?>
 	</div>
 

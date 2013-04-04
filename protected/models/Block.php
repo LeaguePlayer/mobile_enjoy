@@ -32,6 +32,7 @@ class Block extends CActiveRecord
 			array('public', 'numerical', 'integerOnly'=>true),
 			array('name, preview', 'length', 'max'=>255),
 			array('price', 'length', 'max'=>9),
+			array('price', 'numerical', 'max'=>9.99, 'min'=>0.99),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, name, price, preview, public', 'safe', 'on'=>'search'),
@@ -56,10 +57,10 @@ class Block extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'name' => 'Name',
-			'price' => 'Price',
-			'preview' => 'Preview',
-			'public' => 'Public',
+			'name' => 'Название блока',
+			'price' => 'Цена',
+			'preview' => 'Превью',
+			'public' => 'Опубликовать',
 		);
 	}
 

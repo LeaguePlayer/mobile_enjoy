@@ -11,6 +11,12 @@ class m130404_055924_create_user_table extends CDbMigration
             'pass' => 'string NOT NULL',
             'role' => 'string NOT NULL'
         ));
+        $this->insert('user', array(
+        	'name' => 'Admin',
+        	'login' => 'admin',
+        	'pass' => md5('admin'),
+        	'role' => 'admin'
+        ));
 	}
 
 	public function down()

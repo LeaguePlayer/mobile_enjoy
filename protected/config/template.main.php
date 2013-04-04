@@ -8,6 +8,7 @@
 return array(
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
 	'name'=>'My Web Application',
+	'homeUrl'=>array('site/index'),
 
 	// preloading 'log' component
 	'preload'=>array('log'),
@@ -34,6 +35,7 @@ return array(
 		'user'=>array(
 			// enable cookie-based authentication
 			'allowAutoLogin'=>true,
+			'class' => 'WebUser'
 		),
 		// uncomment the following to enable URLs in path-format
 		

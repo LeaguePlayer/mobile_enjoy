@@ -1,0 +1,6 @@
+assets/
+protected/runtime/
+themes/classic/views/
+protected/config/main.php
+uploads/
+*~

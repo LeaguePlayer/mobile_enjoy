@@ -1,32 +1,21 @@
 <?php
 
 /**
- * This is the model class for table "block".
+ * This is the model class for table "image".
  *
- * The followings are the available columns in table 'block':
+ * The followings are the available columns in table 'image':
  * @property integer $id
- * @property string $name
- * @property string $price
- * @property string $preview
- * @property integer $public
+ * @property string $filename
+ * @property integer $block_id
  */
-class Block extends CActiveRecord
+class Image extends CActiveRecord
 {
-
-	const PREVIEW_126X124 = 1;
-	const PREVIEW_252X248 = 2;
-
-	// public previewArray = array(
-	// 	Block::PREVIEW_126X124 => '126x124',
-	// 	Block::PREVIEW_252X248 => '252x248'
-	// );
-
 	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
 	{
-		return 'block';
+		return 'image';
 	}
 
 	/**
@@ -37,15 +26,13 @@ class Block extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name, price, public', 'required'),
-			array('public', 'numerical', 'integerOnly'=>true),
-			array('name, preview', 'length', 'max'=>255),
-			array('preview', 'file', 'types'=>'jpg, gif, png', 'allowEmpty' => true),
-			array('price', 'length', 'max'=>9),
-			array('price', 'numerical', 'min'=>0, 'max'=>9.99),
+			array('filename, block_id', 'required'),
+			array('block_id, sort', 'numerical', 'integerOnly'=>true),
+			array('filename', 'length', 'max'=>255),
+			array('filename', 'file', 'types'=>'jpg, gif, png'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, name, price, preview, public', 'safe', 'on'=>'search'),
+			array('id, filename, block_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -57,14 +44,7 @@ class Block extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'images'=>array(self::HAS_MANY, 'Image', 'block_id', 'order'=>'sort'),
-		);
-	}
-
-	public function getPreviewArray(){
-		return array(
-			Block::PREVIEW_126X124 => '126x124',
-			Block::PREVIEW_252X248 => '252x248'
+			'block'=>array(self::BELONGS_TO, 'Block', 'block_id'),
 		);
 	}
 
@@ -75,10 +55,9 @@ class Block extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'name' => 'Название блока',
-			'price' => 'Цена',
-			'preview' => 'Превью',
-			'public' => 'Опубликовать',
+			'filename' => 'Изображение',
+			'block_id' => 'Блок',
+			'sort' => 'Вес'
 		);
 	}
 
@@ -101,10 +80,8 @@ class Block extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('name',$this->name,true);
-		$criteria->compare('price',$this->price,true);
-		$criteria->compare('preview',$this->preview,true);
-		$criteria->compare('public',$this->public);
+		$criteria->compare('filename',$this->filename,true);
+		$criteria->compare('block_id',$this->block_id);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -115,7 +92,7 @@ class Block extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return Block the static model class
+	 * @return Image the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

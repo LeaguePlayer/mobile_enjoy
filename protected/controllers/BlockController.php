@@ -6,6 +6,10 @@ class BlockController extends Controller
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
 	 * using two-column layout. See 'protected/views/layouts/column2.php'.
 	 */
+
+	private $uploadsDirName = 'uploads';
+	//private $uploadsDir = '/uploads/';
+
 	public $layout='//layouts/column2';
 
 	/**
@@ -51,6 +55,13 @@ class BlockController extends Controller
 	 */
 	public function actionView($id)
 	{
+		//include jQuery UI
+		Yii::app()->getClientScript()->registerCoreScript( 'jquery.ui' );
+		Yii::app()->clientScript->registerCssFile(
+			Yii::app()->clientScript->getCoreScriptUrl().
+			'/jui/css/base/jquery-ui.css'
+		);
+
 		$this->render('view',array(
 			'model'=>$this->loadModel($id),
 		));
@@ -69,7 +80,9 @@ class BlockController extends Controller
 
 		if(isset($_POST['Block']))
 		{
-			$model->attributes=$_POST['Block'];
+			$model->attributes = $_POST['Block'];
+			$model->preview = $this->createImage(CUploadedFile::getInstance($model,'preview'));
+
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -77,6 +90,37 @@ class BlockController extends Controller
 		$this->render('create',array(
 			'model'=>$model,
 		));
+	}
+
+	//Save image
+	private function createImage($uploadFile){
+		if($uploadFile){
+			$uploadsDir =  YiiBase::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.$this->uploadsDirName.DIRECTORY_SEPARATOR;
+			if(!is_dir($uploadsDir)){
+				@mkdir($uploadsDir);
+			}
+
+			$thumb = Yii::app()->phpThumb->create($uploadFile->tempName);
+
+			switch ($_POST['preview_size']) {
+				case Block::PREVIEW_126X124:
+					$thumb->resize(126, 124);
+					break;
+				case Block::PREVIEW_252X248:
+					$thumb->resize(252, 248);
+					break;
+			}
+
+			$filename = md5(mktime()).".".$uploadFile->extensionName;
+			$thumb->save($uploadsDir.$filename);
+			return DIRECTORY_SEPARATOR.$this->uploadsDirName.DIRECTORY_SEPARATOR.$filename;
+		}
+		return '';
+	}
+
+	//Delete image
+	private function deleteImage($imagePath){
+		@unlink(YiiBase::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.$imagePath);
 	}
 
 	/**
@@ -91,9 +135,19 @@ class BlockController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
+		$current_image = $model->preview;
+
+		if(!empty($_POST['deleteImage']))
+			$this->deleteImage($model->preview);
+
 		if(isset($_POST['Block']))
 		{
 			$model->attributes=$_POST['Block'];
+			$model->preview = $this->createImage(CUploadedFile::getInstance($model,'preview'));
+
+			if($model->preview == '')
+				$model->preview = $current_image;
+
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -110,7 +164,9 @@ class BlockController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-		$this->loadModel($id)->delete();
+		$model = $this->loadModel($id);
+		$this->deleteImage($model->preview);
+		$model->delete();
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 		if(!isset($_GET['ajax']))

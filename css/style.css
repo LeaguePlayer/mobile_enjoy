@@ -1,0 +1,26 @@
+#block h2{
+	margin: 10px 0;
+}
+#block .images{
+	padding: 10px;
+	border: 2px dashed #0066A4;
+	overflow: hidden;
+}
+#block .images div{
+	width: 100px;
+	height: 100px;
+	float: left;
+	margin-right: 5px;
+	margin-bottom: 5px;
+	border: 1px dashed #0066A4;
+}
+#block .images div.add{
+	height: 85px;
+	padding-top: 15px;
+	border: 1px dashed #0066A4;
+	text-align: center;
+}
+#block .images div.add a{
+	text-decoration: none;
+	font-size: 5em;
+}

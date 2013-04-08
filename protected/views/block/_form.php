@@ -2,12 +2,11 @@
 /* @var $this BlockController */
 /* @var $model Block */
 /* @var $form CActiveForm */
-$prices = array();
+$prices = array('0.00' => 0.00);
 for($i = 0; $i <= 9; $i++){
-	$p = (0.99) + $i;
-	$prices[$p.""] = $p;
+	$p = ((0.99) + $i);
+	$prices[$p.""] = $p."$";
 }
-print_r($prices);
 ?>
 
 <div class="form">
@@ -35,14 +34,23 @@ print_r($prices);
 	</div>
 
 	<div class="row">
+
+		<?php if($model->preview) {?>
+		<div class="image">
+			<?=CHtml::image($model->preview);?>
+			<?php echo CHtml::label('Удалить изображение', 'deleteImage'); ?>
+			<?php echo CHtml::checkBox('deleteImage'); ?>
+		</div>
+		<?}?>
 		<?php echo $form->labelEx($model,'preview'); ?>
+		<?php echo CHtml::dropDownList('preview_size', 1, $model->getPreviewArray());?>
 		<?php echo $form->fileField($model,'preview'); ?>
 		<?php echo $form->error($model,'preview'); ?>
 	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'public'); ?>
-		<?php echo $form->checkBox($model,'public'); ?>
+		<?php echo $form->checkBox($model,'public', array('checked' => 'checked')); ?>
 		<?php echo $form->error($model,'public'); ?>
 	</div>
 

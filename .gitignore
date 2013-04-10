@@ -5,3 +5,5 @@ protected/config/main.php
 protected/config/console.php
 uploads/
 *~
+index.php
+protected/yiic.php

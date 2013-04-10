@@ -3,16 +3,15 @@
 /* @var $dataProvider CActiveDataProvider */
 
 $this->breadcrumbs=array(
-	'Blocks',
+	'Блоки',
 );
 
 $this->menu=array(
-	array('label'=>'Create Block', 'url'=>array('create')),
-	array('label'=>'Manage Block', 'url'=>array('admin')),
+	array('label'=>'Создать блок', 'url'=>array('create'))
 );
 ?>
 
-<h1>Blocks</h1>
+<h1>Блоки</h1>
 
 <?php $this->widget('zii.widgets.CListView', array(
 	'dataProvider'=>$dataProvider,

@@ -9,6 +9,10 @@ class m130404_053114_create_page_table extends CDbMigration
             'title' => 'string NOT NULL',
             'content' => 'text',
         ));
+        $this->insert('page', array(
+        	'title' => 'Информация',
+            'content' => 'Текст',
+        ));
 	}
 
 	public function down()

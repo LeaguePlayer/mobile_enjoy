@@ -24,3 +24,43 @@
 	text-decoration: none;
 	font-size: 5em;
 }
+
+/*-----builder-----*/
+
+#color-selector, #bg-canvas {
+	position: relative;
+	width: 36px;
+	height: 36px;
+	background: url(../js/colorpicker/images/select.png);
+}
+#color-selector div, #bg-canvas div {
+	position: absolute;
+	top: 3px;
+	left: 3px;
+	width: 30px;
+	height: 30px;
+	background: url(../js/colorpicker/images/select.png) center;
+}
+#settings fieldset{
+	border: 1px solid #ccc;
+	margin-bottom: 10px;
+	width: 620px;
+	padding: 10px;
+}
+	#settings fieldset #text{
+		width: 100%;
+		height: 50px;
+		border: 1px solid #aaa;
+		font-family: Arial;
+	}
+#canvas-container{
+}
+#canvas-container canvas{
+	border: 1px dashed #ccc;
+}
+#uploadFile .qq-upload-list{
+	display: none;
+}
+#images img{
+	border: 1px solid #ccc;
+}

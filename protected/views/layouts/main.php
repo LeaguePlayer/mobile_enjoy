@@ -30,8 +30,9 @@
 	<div id="mainmenu">
 		<?php $this->widget('zii.widgets.CMenu',array(
 			'items'=>array(
-				array('label'=>'Описание', 'url'=>array('/page/1')),
-				array('label'=>'Блоки', 'url'=>array('/block/')),
+				array('label'=>'Описание', 'url'=>array('/page/1'), 'visible'=>!Yii::app()->user->isGuest),
+				array('label'=>'Блоки', 'url'=>array('/block/'), 'visible'=>!Yii::app()->user->isGuest),
+				array('label'=>'Администратор', 'url'=>array('/user/update/1'), 'visible'=>!Yii::app()->user->isGuest),
 				array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
 				array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
 			),

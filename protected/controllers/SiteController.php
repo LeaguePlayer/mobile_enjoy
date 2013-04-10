@@ -22,6 +22,38 @@ class SiteController extends Controller
 	}
 
 	/**
+	 * @return array action filters
+	 */
+	public function filters()
+	{
+		return array(
+			'accessControl', // perform access control for CRUD operations
+			'postOnly + delete', // we only allow deletion via POST request
+		);
+	}
+
+	/**
+	 * Specifies the access control rules.
+	 * This method is used by the 'accessControl' filter.
+	 * @return array access control rules
+	 */
+	public function accessRules()
+	{
+		return array(
+			array('allow',  // allow all users to perform 'index' and 'view' actions
+				'actions'=>array('login', 'index'),
+				'users'=>array('*'),
+			),
+			array('allow',  // allow all users to perform 'index' and 'view' actions
+				'actions'=>array('login', 'logout'),
+				'users'=>array('admin'),
+			),
+			array('deny',  // deny all users
+				'users'=>array('*'),
+			),
+		);
+	}
+	/**
 	 * This is the default 'index' action that is invoked
 	 * when an action is not explicitly requested by users.
 	 */
@@ -31,10 +63,10 @@ class SiteController extends Controller
 		// using the default layout 'protected/views/layouts/main.php'
 		$model = new LoginForm;
 
-		if(!Yii::app()->user->isGuest){
-			$this->render('index');
+		if(Yii::app()->user->isGuest){
+			$this->render('login', array('model' => $model));
 		}else{
-			$this->redirect('login', array('model' => $model));
+			$this->redirect('/block/index');
 		}
 	}
 
@@ -98,7 +130,7 @@ class SiteController extends Controller
 			$model->attributes=$_POST['LoginForm'];
 			// validate user input and redirect to the previous page if valid
 			if($model->validate() && $model->login())
-				$this->redirect(Yii::app()->user->returnUrl);
+				$this->redirect('/block/index');
 		}
 		// display the login form
 		$this->render('login',array('model'=>$model));

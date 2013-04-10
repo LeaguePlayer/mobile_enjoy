@@ -3,16 +3,15 @@
 /* @var $model Block */
 
 $this->breadcrumbs=array(
-	'Blocks'=>array('index'),
-	'Create',
+	'Блоки'=>array('index'),
+	'Создать блок',
 );
 
 $this->menu=array(
-	array('label'=>'List Block', 'url'=>array('index')),
-	array('label'=>'Manage Block', 'url'=>array('admin')),
+	array('label'=>'Все блоки', 'url'=>array('index')),
 );
 ?>
 
-<h1>Create Block</h1>
+<h1>Создать блок</h1>
 
 <?php echo $this->renderPartial('_form', array('model'=>$model)); ?>

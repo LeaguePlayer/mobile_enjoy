@@ -58,7 +58,6 @@
 	    if(w > 640) w = 640;
 	    if(w < 100) w = 100;
 
-	    if(h > 480) h = 480;
 	    if(h < 100) h = 100;
 
 	    console.log(w,h);

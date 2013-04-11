@@ -77,7 +77,7 @@ class ImageController extends Controller
 		//Include my js file
 		$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/builder.js'), CClientScript::POS_END);
 		//Include jquery.form
-		$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/form/jquery.form.js'), CClientScript::POS_HEAD);
+		//$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/form/jquery.form.js'), CClientScript::POS_HEAD);
 		// //Include farbtastic
 		$cs->registerCssFile('/js/colorpicker/css/colorpicker.css', CClientScript::POS_HEAD);
 		$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/colorpicker/js/colorpicker.js'), CClientScript::POS_HEAD);

@@ -2,11 +2,6 @@
 /* @var $this PageController */
 /* @var $model Page */
 
-$this->breadcrumbs=array(
-	'Pages'=>array('index'),
-	$model->title,
-);
-
 $this->menu=array(
 	//array('label'=>'List Page', 'url'=>array('index')),
 	//array('label'=>'Create Page', 'url'=>array('create')),

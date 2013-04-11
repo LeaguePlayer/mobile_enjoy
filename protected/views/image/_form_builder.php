@@ -108,6 +108,7 @@
 	<?php echo $form->hiddenField($model,'filename', array('class' => 'file' )); ?>
 
 	<div class="row">
+		<?php echo $form->labelEx($model,'block_id'); ?>
 		<?php echo $form->dropDownList($model,'block_id', CHtml::listData($blocks, 'id', 'name')); ?>
 		<?php echo $form->error($model,'block_id'); ?>
 	</div>

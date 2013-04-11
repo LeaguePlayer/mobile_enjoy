@@ -64,7 +64,7 @@ class SiteController extends Controller
 		$model = new LoginForm;
 
 		if(Yii::app()->user->isGuest){
-			$this->render('login', array('model' => $model));
+			$this->redirect('/site/login');
 		}else{
 			$this->redirect('/block/index');
 		}

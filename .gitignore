@@ -1,4 +1,10 @@
 /assets/*
+
+#for capistrano
+/config/
+Capfile
+#---
+
 protected/runtime/
 themes/classic/views/
 protected/config/main.php

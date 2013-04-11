@@ -43,7 +43,8 @@ class ApiController extends Controller
 			foreach ($blocks as $key => $item) {
 				$data['blocks'][$key]['name'] = $item->name;
 				$data['blocks'][$key]['price'] = $item->price;
-				$data['blocks'][$key]['images'] = $item->preview;
+				$data['blocks'][$key]['images']['display'] = '/uploads/'.$item->preview;
+				$data['blocks'][$key]['images']['retina_display'] = '/uploads/retina/'.$item->preview;
 			}
 			$result->result = 1; 
 			$result->response = (object) $data;

@@ -19,7 +19,8 @@ $this->menu=array(
 
 <div id="block">
 	<div>
-		<?php echo CHtml::image($model->preview, "", array('align' => 'left'));?>
+		<?php echo CHtml::image('/uploads/'.$model->preview, "", array());?>
+		<?php echo CHtml::image('/uploads/retina/'.$model->preview, "", array());?>
 		<span><?php echo $model->getAttributeLabel('price').' : '.$model->price.' $';?></span>
 		<div style="clear: both;"></div>
 	</div>

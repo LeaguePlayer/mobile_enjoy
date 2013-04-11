@@ -7,7 +7,7 @@ class BlockController extends Controller
 	 * using two-column layout. See 'protected/views/layouts/column2.php'.
 	 */
 
-	private $uploadsDirName = 'uploads';
+	private $uploadsDirName = '/uploads/';
 	//private $uploadsDir = '/uploads/';
 
 	public $layout='//layouts/column2';
@@ -87,32 +87,31 @@ class BlockController extends Controller
 	//Save image
 	private function createImage($uploadFile){
 		if($uploadFile){
-			$uploadsDir =  YiiBase::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.$this->uploadsDirName.DIRECTORY_SEPARATOR;
-			if(!is_dir($uploadsDir)){
-				@mkdir($uploadsDir);
-			}
+			$uploadsDir =  YiiBase::getPathOfAlias('webroot').$this->uploadsDirName;
+			if(!is_dir($uploadsDir)) @mkdir($uploadsDir);
 
-			$thumb = Yii::app()->phpThumb->create($uploadFile->tempName);
-
-			switch ($_POST['preview_size']) {
-				case Block::PREVIEW_126X124:
-					$thumb->resize(126, 124);
-					break;
-				case Block::PREVIEW_252X248:
-					$thumb->resize(252, 248);
-					break;
-			}
+			$retinaDir = $uploadsDir.'retina/';
+			if(!is_dir($retinaDir)) @mkdir($retinaDir);
 
 			$filename = md5(mktime()).".".$uploadFile->extensionName;
-			$thumb->save($uploadsDir.$filename);
-			return DIRECTORY_SEPARATOR.$this->uploadsDirName.DIRECTORY_SEPARATOR.$filename;
+
+			$thumb = Yii::app()->phpThumb->create($uploadFile->tempName);
+			$thumbRetina = Yii::app()->phpThumb->create($uploadFile->tempName);
+
+			$thumb->resize(126, 124)->save($uploadsDir.$filename);
+			$thumbRetina->resize(252, 248)->save($retinaDir.$filename);
+
+			$filename = md5(mktime()).".".$uploadFile->extensionName;
+
+			return $filename;
 		}
 		return '';
 	}
 
 	//Delete image
-	private function deleteImage($imagePath){
-		@unlink(YiiBase::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.$imagePath);
+	private function deleteImage($filename){
+		@unlink(YiiBase::getPathOfAlias('webroot').$this->uploadsDirName.$filename);
+		@unlink(YiiBase::getPathOfAlias('webroot').$this->uploadsDirName.'retina/'.$filename);
 	}
 
 	/**

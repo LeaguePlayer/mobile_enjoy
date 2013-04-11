@@ -37,13 +37,13 @@ for($i = 0; $i <= 9; $i++){
 
 		<?php if($model->preview) {?>
 		<div class="image">
-			<?=CHtml::image($model->preview);?>
+			<?=CHtml::image('/uploads/'.$model->preview);?>
 			<?php echo CHtml::label('Удалить изображение', 'deleteImage'); ?>
 			<?php echo CHtml::checkBox('deleteImage'); ?>
 		</div>
 		<?}?>
 		<?php echo $form->labelEx($model,'preview'); ?>
-		<?php echo CHtml::dropDownList('preview_size', 1, $model->getPreviewArray());?>
+		<?php //echo CHtml::dropDownList('preview_size', 1, $model->getPreviewArray());?>
 		<?php echo $form->fileField($model,'preview'); ?>
 		<?php echo $form->error($model,'preview'); ?>
 	</div>

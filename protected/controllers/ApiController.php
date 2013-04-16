@@ -41,6 +41,7 @@ class ApiController extends Controller
 		if($blocks !== null){
 			$data['blocks'] = array();
 			foreach ($blocks as $key => $item) {
+				$data['blocks'][$key]['id'] = $item->id;
 				$data['blocks'][$key]['name'] = $item->name;
 				$data['blocks'][$key]['price'] = $item->price;
 				$data['blocks'][$key]['images']['display'] = '/uploads/'.$item->preview;

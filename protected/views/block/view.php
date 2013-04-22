@@ -26,6 +26,8 @@ $this->menu=array(
 	</div>
 	<div>
 		<h2>Изображения в блоке</h2>
+		<div>Количество изображений - <strong><?=count($model->images)?></strong></div>
+		<br>
 		<div class="images">
 			<?php if($model->images){
 				foreach ($model->images as $value) {

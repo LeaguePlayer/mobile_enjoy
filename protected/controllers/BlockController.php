@@ -32,7 +32,7 @@ class BlockController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view', 'create', 'update', 'delete'),
+				'actions'=>array('index','view', 'create', 'update', 'delete', 'setsort'),
 				'users'=>array('admin'),
 			),
 			array('deny',  // deny all users
@@ -75,6 +75,8 @@ class BlockController extends Controller
 
 			$model->attributes = $_POST['Block'];
 			$model->preview = CUploadedFile::getInstance($model,'preview');
+
+			$model->sort = 1000;
 
 			if($model->validate()){
 				$model->preview = $this->createImage($model->preview);
@@ -175,7 +177,18 @@ class BlockController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('Block');
+		//include jQuery UI
+		Yii::app()->getClientScript()->registerCoreScript( 'jquery.ui' );
+		Yii::app()->clientScript->registerCssFile(
+			Yii::app()->clientScript->getCoreScriptUrl().
+			'/jui/css/base/jquery-ui.css'
+		);
+
+		$dataProvider=new CActiveDataProvider('Block', array(
+			'criteria' => array(
+				'order'=>'sort ASC'
+			)
+		));
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
@@ -223,4 +236,16 @@ class BlockController extends Controller
 			Yii::app()->end();
 		}
 	}
+
+	//Update ajax Fields sort
+	public function actionSetSort(){
+        if(count($_POST['items']) > 0){
+            foreach ($_POST['items'] as $item) {
+                $row = Block::model()->find('id = :id', array(':id' => $item['id']));
+                $row->setAttribute('sort', $item['sort']);
+                $row->update();
+            }
+        }
+        Yii::app()->end();
+    }
 }

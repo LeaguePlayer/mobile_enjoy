@@ -40,14 +40,14 @@ class Block extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('name, price, public, preview', 'required'),
-			array('public', 'numerical', 'integerOnly'=>true),
+			array('public, sort', 'numerical', 'integerOnly'=>true),
 			array('name, preview', 'length', 'max'=>255),
-			array('preview', 'file', 'safe' => true, 'types'=>'jpeg, jpg, gif, png'),
+			array('preview', 'file', 'safe' => true, 'types'=>'jpeg, jpg, gif, png', 'on'=>'insert'),
 			array('price', 'length', 'max'=>9),
 			array('price', 'numerical', 'min'=>0, 'max'=>9.99),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, name, price, preview, public', 'safe', 'on'=>'search'),
+			array('id, name, price, preview, public, sort', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -81,6 +81,7 @@ class Block extends CActiveRecord
 			'price' => 'Цена',
 			'preview' => 'Превью',
 			'public' => 'Опубликовать',
+			'sort' => 'Сортировка'
 		);
 	}
 
@@ -107,6 +108,7 @@ class Block extends CActiveRecord
 		$criteria->compare('price',$this->price,true);
 		$criteria->compare('preview',$this->preview,true);
 		$criteria->compare('public',$this->public);
+		$criteria->compare('sort',$this->sort);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

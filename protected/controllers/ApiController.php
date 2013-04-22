@@ -36,12 +36,12 @@ class ApiController extends Controller
 
 		$result = (object) array('result' => 0, 'error' => '', 'response' => '');
 
-		$blocks = Block::model()->findAll();
+		$blocks = Block::model()->findAll(array('order' => 'sort', 'condition' => 'public != 0 AND preview != :img', 'params'=>array(':img' => '')));
 
 		if($blocks !== null){
 			$data['blocks'] = array();
 			foreach ($blocks as $key => $item) {
-				if(empty($item->preview)) continue;
+				//if(empty($item->preview) || $item->public == 0) continue;
 				$data['blocks'][$key]['id'] = $item->id;
 				$data['blocks'][$key]['name'] = $item->name;
 				$data['blocks'][$key]['price'] = $item->price;

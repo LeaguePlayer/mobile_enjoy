@@ -4,7 +4,10 @@
 ?>
 
 <div class="view" style="overflow: hidden;">
-	<?php echo CHtml::image(CHtml::encode('/uploads/'.$data->preview), '', array('height' => 50, 'align' => 'left', 'style'=>'margin-right: 5px;'));?>
+	<?
+		$img = CHtml::image(CHtml::encode('/uploads/'.$data->preview), '', array('height' => 50, 'align' => 'left', 'style'=>'margin-right: 5px;'));
+		echo CHtml::link($img, array('view', 'id'=>$data->id));
+	?>
 	<b><?php echo CHtml::encode($data->getAttributeLabel('name')); ?>:</b>
 	<?php echo CHtml::link(CHtml::encode($data->name), array('view', 'id'=>$data->id)); ?>
 	<br />

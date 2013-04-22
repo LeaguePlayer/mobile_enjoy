@@ -50,7 +50,11 @@ for($i = 0; $i <= 9; $i++){
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'public'); ?>
-		<?php echo $form->checkBox($model,'public', array('checked' => 'checked')); ?>
+		<?if($model->public){?>
+			<?php echo $form->checkBox($model,'public', array('checked' => 'checked')); ?>
+		<?}else{?>
+			<?php echo $form->checkBox($model,'public'); ?>
+		<?}?>
 		<?php echo $form->error($model,'public'); ?>
 	</div>
 

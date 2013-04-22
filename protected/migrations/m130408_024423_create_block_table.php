@@ -9,7 +9,8 @@ class m130408_024423_create_block_table extends CDbMigration
             'name' => 'string NOT NULL',
             'price' => 'DECIMAL(9, 2) NOT NULL',
             'preview' => 'string',
-            'public' => 'BOOLEAN NOT NULL'
+            'public' => 'BOOLEAN NOT NULL',
+            'sort' => 'int NOT NULL DEFAULT 0'
         ));
 	}
 

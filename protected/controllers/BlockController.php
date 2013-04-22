@@ -72,6 +72,7 @@ class BlockController extends Controller
 
 		if(isset($_POST['Block']))
 		{
+
 			$model->attributes = $_POST['Block'];
 			$model->preview = $this->createImage(CUploadedFile::getInstance($model,'preview'));
 

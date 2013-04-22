@@ -37,10 +37,10 @@ class Block extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name, price, public', 'required'),
+			array('name, price, public, preview', 'required'),
 			array('public', 'numerical', 'integerOnly'=>true),
 			array('name, preview', 'length', 'max'=>255),
-			array('preview', 'file', 'types'=>'jpg, gif, png', 'allowEmpty' => true),
+			//array('preview', 'file', 'types'=>'jpg, gif, png'),
 			array('price', 'length', 'max'=>9),
 			array('price', 'numerical', 'min'=>0, 'max'=>9.99),
 			// The following rule is used by search().

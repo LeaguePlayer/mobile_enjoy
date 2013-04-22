@@ -285,7 +285,6 @@ class ImageController extends Controller
 		$model = $this->loadModel($id);
 		$block_id = $model->block_id;
 
-		$this->deleteImage($model);
 		$model->delete();
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser

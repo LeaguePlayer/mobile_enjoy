@@ -74,10 +74,16 @@ class BlockController extends Controller
 		{
 
 			$model->attributes = $_POST['Block'];
-			$model->preview = $this->createImage(CUploadedFile::getInstance($model,'preview'));
+			$model->preview = CUploadedFile::getInstance($model,'preview');
 
-			if($model->save())
+			if($model->validate()){
+				$model->preview = $this->createImage($model->preview);
+				$model->save(false);
 				$this->redirect(array('view','id'=>$model->id));
+			}
+
+			// if($model->save())
+			// 	$this->redirect(array('view','id'=>$model->id));
 		}
 
 		$this->render('create',array(
@@ -157,12 +163,11 @@ class BlockController extends Controller
 	public function actionDelete($id)
 	{
 		$model = $this->loadModel($id);
-		$this->deleteImage($model->preview);
 		$model->delete();
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 		if(!isset($_GET['ajax']))
-			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('index'));
 	}
 
 	/**

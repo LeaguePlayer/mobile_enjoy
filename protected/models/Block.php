@@ -16,6 +16,8 @@ class Block extends CActiveRecord
 	const PREVIEW_126X124 = 1;
 	const PREVIEW_252X248 = 2;
 
+	private $uploadsDirName = '/uploads/';
+
 	// public previewArray = array(
 	// 	Block::PREVIEW_126X124 => '126x124',
 	// 	Block::PREVIEW_252X248 => '252x248'
@@ -40,7 +42,7 @@ class Block extends CActiveRecord
 			array('name, price, public, preview', 'required'),
 			array('public', 'numerical', 'integerOnly'=>true),
 			array('name, preview', 'length', 'max'=>255),
-			//array('preview', 'file', 'types'=>'jpg, gif, png'),
+			array('preview', 'file', 'safe' => true, 'types'=>'jpeg, jpg, gif, png'),
 			array('price', 'length', 'max'=>9),
 			array('price', 'numerical', 'min'=>0, 'max'=>9.99),
 			// The following rule is used by search().
@@ -120,5 +122,18 @@ class Block extends CActiveRecord
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+
+	protected function afterDelete(){
+		@unlink(YiiBase::getPathOfAlias('webroot').$this->uploadsDirName.$this->preview);
+		@unlink(YiiBase::getPathOfAlias('webroot').$this->uploadsDirName.'retina/'.$this->preview);
+
+		if($this->images){
+			foreach ($this->images as $item) {
+				$item->delete();
+			}
+		}
+
+		return parent::afterDelete();
 	}
 }

@@ -28,8 +28,8 @@ class Image extends CActiveRecord
 		return array(
 			array('filename, block_id', 'required'),
 			array('block_id, sort', 'numerical', 'integerOnly'=>true),
-			array('filename', 'length', 'max'=>255),
-			//array('filename', 'file', 'types'=>'jpg, gif, png'),
+			//array('filename', 'length', 'max'=>255),
+			array('filename', 'file', 'safe' => true, 'types'=>'jpg, jpeg, gif, png'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, filename, block_id', 'safe', 'on'=>'search'),
@@ -97,5 +97,13 @@ class Image extends CActiveRecord
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+
+	protected function afterDelete(){
+		@unlink(YiiBase::getPathOfAlias('webroot')."/uploads/{$this->block_id}/".$this->filename);
+		@unlink(YiiBase::getPathOfAlias('webroot')."/uploads/{$this->block_id}/retina/".$this->filename);
+		@unlink(YiiBase::getPathOfAlias('webroot')."/uploads/{$this->block_id}/thumbs/".$this->filename);
+
+		return parent::afterDelete();
 	}
 }

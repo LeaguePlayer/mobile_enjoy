@@ -18,7 +18,6 @@ $this->menu=array(
 	}
 	#blocks li{
 		cursor: move;
-		height: 60px;
 		margin-bottom: 10px;
 		border: 1px dashed #aaa;
 	}
@@ -45,6 +44,10 @@ $this->menu=array(
 
 			<b><?php echo CHtml::encode($data->getAttributeLabel('public')); ?>:</b>
 			<?php echo ($data->public == 1 ? 'Да' : 'Нет'); ?>
+			<br />
+
+			<b>Размер блока: </b>
+			<?php echo "~ ".round($arraySizes[$data->id] / (1024*1024), 3)." Мб"; ?>
 			<br />
 		</li>
 	<?}?>

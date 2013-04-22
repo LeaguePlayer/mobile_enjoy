@@ -54,8 +54,11 @@ class BlockController extends Controller
 			'/jui/css/base/jquery-ui.css'
 		);
 
+		$arraySizes = $this->getBlockSize($id);
+
 		$this->render('view',array(
 			'model'=>$this->loadModel($id),
+			'arraySizes'=>$arraySizes
 		));
 	}
 
@@ -190,9 +193,52 @@ class BlockController extends Controller
 				'order'=>'sort ASC'
 			)
 		));
+
+		$arraySizes = $this->getBlockSize();
+
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
+			'arraySizes' => $arraySizes
 		));
+	}
+
+	private function getBlockSize($id = 0){
+		$arraySizes = array();
+		$pathToUploads = YiiBase::getPathOfAlias('webroot').$this->uploadsDirName;
+
+		if(is_numeric($id)){
+			$blocks = array();
+			if($id == 0){ //Посчитать размер всех блоков
+				$blocks = Block::model()->findAll();
+			}elseif($id > 0){
+				$blocks = Block::model()->findAll(array('condition' => 'id = :id', 'params'=>array(':id' => $id)));
+			}
+
+			if(!empty($blocks)){
+				foreach ($blocks as $item) {
+					$id = $item->id;
+					$arraySizes[$id] = 0;
+					$arraySizes[$id] += filesize($pathToUploads.$item->preview);
+					$arraySizes[$id] += filesize($pathToUploads.'retina/'.$item->preview);
+					foreach ($item->images as $image) {
+						$arraySizes[$id] += filesize($pathToUploads."{$image->block_id}/retina/".$image->filename);
+						$arraySizes[$id] += filesize($pathToUploads."{$image->block_id}/thumbs/".$image->filename);
+					}
+				}
+			}
+		}
+		return $arraySizes;
+	}
+
+	public function getImageSize($id = 0){
+		$size = 0;
+		$pathToUploads = YiiBase::getPathOfAlias('webroot').$this->uploadsDirName;
+		if(is_numeric($id) && $id > 0){
+			$image = Image::model()->findByPk($id);
+			$size += filesize($pathToUploads."{$image->block_id}/retina/".$image->filename);
+			$size += filesize($pathToUploads."{$image->block_id}/thumbs/".$image->filename);
+		}
+		return round($size / (1024*1024), 3)." Мб";
 	}
 
 	/**

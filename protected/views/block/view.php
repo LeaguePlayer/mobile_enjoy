@@ -27,11 +27,12 @@ $this->menu=array(
 	<div>
 		<h2>Изображения в блоке</h2>
 		<div>Количество изображений - <strong><?=count($model->images)?></strong></div>
+		<div>Размер блока ~ <strong><?=round($arraySizes[$model->id] / (1024*1024), 3)." Мб"?></strong></div>
 		<br>
 		<div class="images">
 			<?php if($model->images){
 				foreach ($model->images as $value) {
-					echo "<div class='image' data-id='{$value->id}'>".CHtml::link(CHtml::image("/uploads/{$model->id}/thumbs/{$value->filename}"), array('image/view', 'id'=>$value->id ))."</div>";
+					echo "<div class='image' data-id='{$value->id}'>".CHtml::link(CHtml::image("/uploads/{$model->id}/thumbs/{$value->filename}"), array('image/view', 'id'=>$value->id ))."<span>Размер: ".$this->getImageSize($value->id)."</span></div>";
 				}
 			}?>
 			<div class="add"><a href="<?=$this->createUrl('image/create', array('block' => $model->id))?>">+</a></div>

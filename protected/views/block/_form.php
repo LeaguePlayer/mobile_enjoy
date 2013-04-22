@@ -50,7 +50,7 @@ for($i = 0; $i <= 9; $i++){
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'public'); ?>
-		<?if($model->public){?>
+		<?if($model->public || $model->isNewRecord){?>
 			<?php echo $form->checkBox($model,'public', array('checked' => 'checked')); ?>
 		<?}else{?>
 			<?php echo $form->checkBox($model,'public'); ?>

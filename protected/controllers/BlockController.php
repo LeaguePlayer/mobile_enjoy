@@ -185,6 +185,7 @@ class BlockController extends Controller
 		);
 
 		$dataProvider=new CActiveDataProvider('Block', array(
+			'pagination' => false,
 			'criteria' => array(
 				'order'=>'sort ASC'
 			)

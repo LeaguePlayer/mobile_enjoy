@@ -34,8 +34,8 @@
 		var align = jQuery("#align").val();
 		console.log(font);
 	    var textSample = new fabric.Text(text, {
-			left: getRandomInt(350, 400),
-			top: getRandomInt(350, 400),
+			left: 30,
+			top: 30,
 			fontFamily: font,
 			angle: 0,
 			fill: color,

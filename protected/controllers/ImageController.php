@@ -146,6 +146,7 @@ class ImageController extends Controller
 			$file = CUploadedFile::getInstance($model,'filename');
 			$model->filename = $this->createImage($file->tempName, $file->extensionName, $model->block_id);
 			
+			$model->sort = 1000;
 			if($model->save()){
 				if(!empty($_POST['back']))
 					$this->redirect(array('block/view','id'=>$_GET['block']));

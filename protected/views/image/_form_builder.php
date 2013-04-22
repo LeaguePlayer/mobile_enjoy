@@ -28,7 +28,7 @@
 		<?php echo CHtml::label('Ширина', 'c_width');?>
 		<?php echo CHtml::textField('c_width', 640);?>
 		<?php echo CHtml::label('Высота', 'c_height');?>
-		<?php echo CHtml::textField('c_height', 480);?>
+		<?php echo CHtml::textField('c_height', 740);?>
 		<div>
 			<?php echo CHtml::button('Изменить', array('id' => 'set-size'));?>
 		</div>
@@ -83,7 +83,7 @@
 	<?php echo CHtml::button('Удалить элемент', array('id' => 'delete'));?>
 </div>
 <div id="canvas-container">
-	<canvas id="canvas" width="640" height="480"></canvas>
+	<canvas id="canvas" width="640" height="740"></canvas>
 </div>
 <?/* <div class="row">
 	<?php echo $form->labelEx($model,'block_id'); ?>

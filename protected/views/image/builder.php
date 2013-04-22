@@ -4,10 +4,13 @@
 
 $this->menu=array(
 	array('label'=>'Блоки', 'url'=>array('block/index')),
-	array('label'=>'Загрузить', 'url'=>array('create'))
+	//array('label'=>'Загрузить', 'url'=>array('create'))
 );
 if(isset($_GET['block'])){
 	$this->menu[] = array('label'=>'Вернуться в блок', 'url'=>array('block/'.$_GET['block']));
+	$this->menu[] = array('label'=>'Загрузить', 'url'=>array('create?block='.$_GET['block']));
+}else{
+	$this->menu[] = array('label'=>'Загрузить', 'url'=>array('create'));
 }
 ?>
 

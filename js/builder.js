@@ -32,7 +32,7 @@
 		var color = jQuery("textarea#text").css('color');
 		var font = jQuery("#font").val();
 		var align = jQuery("#align").val();
-		console.log(font);
+
 	    var textSample = new fabric.Text(text, {
 			left: 30,
 			top: 30,

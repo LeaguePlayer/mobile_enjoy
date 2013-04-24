@@ -49,8 +49,8 @@
 				<?php echo CHtml::label('Загрузить из шаблона', 'template');?>
 				<?php echo CHtml::dropDownList('template-check', 0, $list);?>
 			</div>
-		<?}?>
 		</div>
+		<?}?>
 		<div class="block">
 			<div class="row">
 				<?php echo CHtml::label('Ширина', 'c_width');?>

@@ -178,14 +178,16 @@
 			$(this).parent().find('.template_name').fadeOut();
 	});
 
-	jQuery('#template-check').click(function(){
+	jQuery('#template-check').change(function(){
 		var template_id = $(this).find('option:selected').val();
+		//console.log(template_id);
 		if(confirm("Все данные на холсте будут потеряны. Продолжить?")){
 			$.post('<?=Yii::app()->createUrl('image/getTemplate')?>',{id: template_id}, function(data){
 				if(data){
 					var c = $('#canvas').data('canvas');
 					c.clear();
 					c.loadFromJSON(data);
+					c.renderAll();
 				}
 
 			});

@@ -143,7 +143,7 @@
 		},
 		onChange: function (hsb, hex, rgb) {
 			jQuery('#color-selector div').css('backgroundColor', '#' + hex);
-			jQuery('#text').css('color', '#' + hex);
+			//jQuery('#text').css('color', '#' + hex);
 			var activeObject = canvas.getActiveObject();
 			if (activeObject && activeObject.type === 'text') {
 				activeObject.setColor('#' + hex);
@@ -170,7 +170,7 @@
 	});
 
 	jQuery("#font").change(function(){
-		//jQuery("#text").css('font-family', jQuery(this).val());
+		jQuery("#text").css('font-family', jQuery(this).val());
 		var activeObject = canvas.getActiveObject();
 		if (activeObject && activeObject.type === 'text') {
 			activeObject.fontFamily = jQuery(this).val();

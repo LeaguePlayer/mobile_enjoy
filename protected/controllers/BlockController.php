@@ -110,8 +110,8 @@ class BlockController extends Controller
 			$thumb = Yii::app()->phpThumb->create($uploadFile->tempName);
 			$thumbRetina = Yii::app()->phpThumb->create($uploadFile->tempName);
 
-			$thumb->resize(126, 124)->save($uploadsDir.$filename);
-			$thumbRetina->resize(252, 248)->save($retinaDir.$filename);
+			$thumb->adaptiveResize(129, 127)->save($uploadsDir.$filename);
+			$thumbRetina->adaptiveResize(253, 249)->save($retinaDir.$filename);
 
 			$filename = md5(mktime()).".".$uploadFile->extensionName;
 

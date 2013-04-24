@@ -26,6 +26,39 @@
 
 	var canvas = global.canvas = new fabric.Canvas('canvas');
 	canvas.setBackgroundColor('#ffffff');
+
+	//Обрабатываем событие клика на текстоый объект
+	canvas.on('object:selected', onObjectSelected);
+
+	function onObjectSelected(e){
+		var selectedObject = e.target;
+
+		if (selectedObject.type === 'text') {
+	      $('textarea#text').val(selectedObject.getText());
+	    }
+	}
+
+	var textEl = $('textarea#text');
+	if (textEl) {
+		textEl.focus(function(e){
+			var activeObject = canvas.getActiveObject();
+			if (activeObject && activeObject.type === 'text') {
+				$(this).val(activeObject.text);
+			}
+		});
+		textEl.keyup(function(e){
+			var activeObject = canvas.getActiveObject();
+			if (activeObject) {
+				if (!$(this).val()) {
+					canvas.discardActiveObject();
+				}
+				else {
+					activeObject.setText($(this).val());
+				}
+				canvas.renderAll();
+			}
+		});
+	}
 	
 	jQuery('#add-text').click(function() {
 		var text = jQuery("textarea#text").val();
@@ -51,28 +84,34 @@
 	    //updateComplexity();
  	});
 
- 	jQuery('#set-size').click(function() {
-	    var w = jQuery('#c_width').val();
-	    var h = jQuery('#c_height').val();
+ 	jQuery('#c_width, #c_height').on('keyup', function(){
+ 		var self = jQuery(this);
+ 		var v = parseInt(self.val(), 10);
 
-	    if(w > 640) w = 640;
-	    if(w < 100) w = 100;
-
-	    if(h < 100) h = 100;
-
-	    console.log(w,h);
-	    canvas.setWidth(w);
-	    canvas.setHeight(h);
-
-	    jQuery('#c_width').val(w);
-	    jQuery('#c_height').val(h);
-
-		canvas.renderAll();
+ 		switch(self.attr('id')){
+ 			case 'c_width':{
+ 				if(v > 640) v = 640;
+ 				if(v < 100) v = 100;
+ 				canvas.setWidth(v);
+ 				break;
+ 			}
+ 			case 'c_height':{
+ 				if(v < 100) v = 100;
+ 				canvas.setHeight(v);
+ 				break;
+ 			}
+ 		}
+	    canvas.renderAll();
  	});
 
  	jQuery('#builder-form').submit(function(){
  		canvas.deactivateAll().renderAll();
  		jQuery(this).find('.file').val(canvas.toDataURL());
+ 	});
+
+ 	jQuery('#clear-canvas').click(function() {
+ 		canvas.clear();
+ 		canvas.renderAll();
  	});
 
  	jQuery('#delete').click(function() {
@@ -105,6 +144,11 @@
 		onChange: function (hsb, hex, rgb) {
 			jQuery('#color-selector div').css('backgroundColor', '#' + hex);
 			jQuery('#text').css('color', '#' + hex);
+			var activeObject = canvas.getActiveObject();
+			if (activeObject && activeObject.type === 'text') {
+				activeObject.setColor('#' + hex);
+				canvas.renderAll();
+			}
 		}
 	});
 	//background canvas
@@ -126,7 +170,12 @@
 	});
 
 	jQuery("#font").change(function(){
-		jQuery("#text").css('font-family', jQuery(this).val());
+		//jQuery("#text").css('font-family', jQuery(this).val());
+		var activeObject = canvas.getActiveObject();
+		if (activeObject && activeObject.type === 'text') {
+			activeObject.fontFamily = jQuery(this).val();
+			canvas.renderAll();
+		}
 	});
 
 	jQuery('#canvas').data('canvas', canvas);

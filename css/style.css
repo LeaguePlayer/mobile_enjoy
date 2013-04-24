@@ -31,6 +31,15 @@
 }
 
 /*-----builder-----*/
+#builder{
+	display: none;
+	width: 1020px;
+	min-height: 748px;
+}
+
+.colorpicker{
+	z-index: 8050;
+}
 
 #color-selector, #bg-canvas {
 	position: relative;
@@ -46,11 +55,41 @@
 	height: 30px;
 	background: url(../js/colorpicker/images/select.png) center;
 }
+#settings {
+	width: 340px;
+	float: left;
+}
 #settings fieldset{
 	border: 1px solid #ccc;
 	margin-bottom: 10px;
 	width: 620px;
 	padding: 10px;
+}
+#settings .block{
+	padding-bottom: 10px;
+	border-bottom: 1px solid #444;
+	margin-bottom: 15px;
+}
+#settings .block textarea{
+	width: 330px;
+	font-family: Arial;
+	border: 1px solid #aaa;
+	border-radius: 2px;
+}
+#settings .save-block input{
+	background-color: green;
+	border: 1px solid #aaa;
+	height: 30px;
+	cursor: pointer;
+	color: #fff;
+}
+#settings .row{
+	width: 160px;
+	margin-right: 5px;
+	float: left;
+}
+#settings .row input{
+	width: 150px;
 }
 	#settings fieldset #text{
 		width: 100%;
@@ -59,8 +98,12 @@
 		font-family: Arial;
 	}
 #canvas-container{
+	width: 640px;
+	min-height: 740px;
+	float: left;
+	margin-right: 15px;
 }
-#canvas-container canvas{
+.canvas-container canvas{
 	border: 1px dashed #ccc;
 }
 #uploadFile .qq-upload-list{
@@ -68,4 +111,15 @@
 }
 #images img{
 	border: 1px solid #ccc;
+}
+.clear{
+	clear: both;
+}
+a.builder{
+	padding: 10px;
+	background-color: #ccc;
+	border: 1px solid #aaa;
+	display: inline-block;
+	margin-bottom: 10px;
+	color: #000;
 }

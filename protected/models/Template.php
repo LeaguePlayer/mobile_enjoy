@@ -1,21 +1,21 @@
 <?php
 
 /**
- * This is the model class for table "image".
+ * This is the model class for table "template".
  *
- * The followings are the available columns in table 'image':
+ * The followings are the available columns in table 'template':
  * @property integer $id
- * @property string $filename
- * @property integer $block_id
+ * @property string $name
+ * @property string $json
  */
-class Image extends CActiveRecord
+class Template extends CActiveRecord
 {
 	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
 	{
-		return 'image';
+		return 'template';
 	}
 
 	/**
@@ -26,13 +26,11 @@ class Image extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('filename, block_id', 'required'),
-			array('block_id, sort', 'numerical', 'integerOnly'=>true),
-			array('filename', 'length', 'max'=>255),
-			//array('filename', 'file', 'safe' => true, 'types'=>'jpg, jpeg, gif, png'),
+			array('name, json', 'required'),
+			array('name', 'length', 'max'=>255),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, filename, block_id', 'safe', 'on'=>'search'),
+			array('id, name, json', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -44,7 +42,6 @@ class Image extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'block'=>array(self::BELONGS_TO, 'Block', 'block_id'),
 		);
 	}
 
@@ -55,9 +52,8 @@ class Image extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'filename' => 'Изображение',
-			'block_id' => 'Блок',
-			'sort' => 'Вес'
+			'name' => 'Имя',
+			'json' => 'Данные',
 		);
 	}
 
@@ -80,8 +76,8 @@ class Image extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('filename',$this->filename,true);
-		$criteria->compare('block_id',$this->block_id);
+		$criteria->compare('name',$this->name,true);
+		$criteria->compare('json',$this->json,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -92,18 +88,10 @@ class Image extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return Image the static model class
+	 * @return Template the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
-	}
-
-	protected function afterDelete(){
-		@unlink(YiiBase::getPathOfAlias('webroot')."/uploads/{$this->block_id}/".$this->filename);
-		@unlink(YiiBase::getPathOfAlias('webroot')."/uploads/{$this->block_id}/retina/".$this->filename);
-		@unlink(YiiBase::getPathOfAlias('webroot')."/uploads/{$this->block_id}/thumbs/".$this->filename);
-
-		return parent::afterDelete();
 	}
 }

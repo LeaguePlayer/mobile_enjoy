@@ -29,7 +29,7 @@ class ImageController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('delete', 'view', 'create', 'setsort', 'builder', 'getImage'),
+				'actions'=>array('delete', 'view', 'create', 'setsort', 'builder', 'getImage', 'createTemplate', 'getTemplate'),
 				'users'=>array('admin'),
 			),
 			array('deny',  // deny all users
@@ -49,6 +49,51 @@ class ImageController extends Controller
 		));
 	}
 
+	public function actionGetTemplate(){
+		header('Content-type: application/json');
+		if(is_numeric($_POST['id']) && $_POST['id'] > 0){
+			$template = Template::model()->findByPk($_POST['id']);
+			echo $template->json;
+		}
+		Yii::app()->end();
+	}
+
+	public function actionCreateTemplate(){
+		$template = new Template;
+
+		if(isset($_POST['Template'])){
+			$template->attributes = $_POST['Template'];
+			
+			if($template->save()){
+				$copy_images = array();
+				$id = $template->id;
+
+				$uploadsDir =  YiiBase::getPathOfAlias('webroot').$this->uploadsDirName;
+				if(!is_dir($uploadsDir)) @mkdir($uploadsDir);
+
+				$templateDir = $uploadsDir.'template/';
+				if(!is_dir($templateDir)) @mkdir($templateDir);
+
+				$idDir = $templateDir.$id.'/';
+				if(!is_dir($idDir)) @mkdir($idDir);
+
+				$objects = CJSON::decode($template->json);
+				$objects = $objects['objects'];
+				foreach ($objects as $key => $obj) {
+					if($obj['type'] == 'image'){
+						$copy_images[] = YiiBase::getPathOfAlias('webroot').str_replace(Yii::app()->request->getBaseUrl(true), '', $obj['src']);
+					}
+				}
+				foreach ($copy_images as $image) {
+					$to_file = str_replace('tmp', 'template/'.$id, $image);
+					copy($image, $to_file);
+				}
+				echo 'ok';
+			}
+		}
+		Yii::app()->end();
+	}
+
 	public function actionGetImage(){
 		Yii::import("ext.EAjaxUpload.qqFileUploader");
 
@@ -66,23 +111,6 @@ class ImageController extends Controller
 
 	public function actionBuilder(){
 		$model=new Image;
-
-		$cs = Yii::app()->clientScript;
-		$am = Yii::app()->assetManager;
-
-		Yii::app()->getClientScript()->registerCoreScript('jquery');
-		$cs->registerCssFile($cs->getCoreScriptUrl().'/jui/css/base/jquery-ui.css', CClientScript::POS_HEAD);
-		//Include Fabric.js for Canvas
-		$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/fabricjs/all.js'), CClientScript::POS_HEAD);
-		//Include my js file
-		$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/builder.js'), CClientScript::POS_END);
-		//Include jquery.form
-		//$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/form/jquery.form.js'), CClientScript::POS_HEAD);
-		// //Include farbtastic
-		$cs->registerCssFile('/js/colorpicker/css/colorpicker.css', CClientScript::POS_HEAD);
-		$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/colorpicker/js/colorpicker.js'), CClientScript::POS_HEAD);
-		// $cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/colorpicker/js/eye.js'), CClientScript::POS_HEAD);
-		// $cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/colorpicker/js/utils.js'), CClientScript::POS_HEAD);
 
 		if(isset($_POST['Image']))
 		{
@@ -110,23 +138,14 @@ class ImageController extends Controller
 				}
 			}
 
+			$model->sort = 1000;
 			if($model->save()){
-				if(!empty($_POST['back']))
-					$this->redirect(array('block/view','id'=>$_GET['block']));
-				$this->redirect(array('view','id'=>$model->id));
+				echo 'ok';
 			}
 				
 		}
 
-		$blocks = Block::model()->findAll();
-		if(!empty($_GET['block']))
-			$model->block_id = $_GET['block'];
-
-		$this->render('builder',array(
-			'model'=>$model,
-			'blocks'=>$blocks
-		));
-
+		Yii::app()->end();
 	}
 
 	/**
@@ -139,6 +158,23 @@ class ImageController extends Controller
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
+		$cs = Yii::app()->clientScript;
+		$am = Yii::app()->assetManager;
+
+		Yii::app()->getClientScript()->registerCoreScript('jquery');
+		$cs->registerCssFile($cs->getCoreScriptUrl().'/jui/css/base/jquery-ui.css', CClientScript::POS_HEAD);
+		//Include fancybox.js for Canvas
+		$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/fancybox/lib/jquery.mousewheel-3.0.6.pack.js'), CClientScript::POS_HEAD);
+		$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/fancybox/source/jquery.fancybox.js'), CClientScript::POS_HEAD);
+		//Include Fabric.js for Canvas
+		$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/fabricjs/all.js'), CClientScript::POS_HEAD);
+		//Include my js file
+		$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/builder.js'), CClientScript::POS_END);
+		//Include color-picker
+		$cs->registerCssFile('/js/colorpicker/css/colorpicker.css', CClientScript::POS_HEAD);
+		$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/colorpicker/js/colorpicker.js'), CClientScript::POS_HEAD);
+
+		$cs->registerCssFile('/js/fancybox/source/jquery.fancybox.css', CClientScript::POS_HEAD);
 
 		if(isset($_POST['Image']))
 		{
@@ -161,7 +197,8 @@ class ImageController extends Controller
 
 		$this->render('create',array(
 			'model'=>$model,
-			'blocks'=>$blocks
+			'blocks'=>$blocks,
+			'templates' => Template::model()->findAll()
 		));
 	}
 

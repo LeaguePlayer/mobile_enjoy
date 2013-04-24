@@ -23,6 +23,7 @@
 ?>
 
 <div id="settings">
+<form id="form-settings">
 	<fieldset>
 		<legend>Размеры</legend>
 		<?php echo CHtml::label('Ширина', 'c_width');?>
@@ -78,6 +79,29 @@
 			)); ?>
 		</div>
 	</fieldset>
+</form>
+<a id="set" href="#set">Установить</a>
+<script type="text/javascript">
+	var settings = jQuery('#form-settings').serialize();
+	console.log(settings);
+
+	function unserialize(values){
+		var c = jQuery('#canvas').data('canvas');
+		console.log(JSON.stringify(c));
+		// values = values.split("&");
+		// var serialized_values = [];
+		// $.each(values, function(){
+		// 	var properties = this.split("=");
+		// 	//console.log('#'.properties[0]);
+		// 	$('#'+properties[0]).val(properties[1]);
+		// });
+	}
+
+	jQuery('#set').click(function(e){
+		e.preventDefault();
+		unserialize(settings);
+	});
+</script>
 </div>
 <div>
 	<?php echo CHtml::button('Удалить элемент', array('id' => 'delete'));?>

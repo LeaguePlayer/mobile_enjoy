@@ -37,6 +37,7 @@
 				<?php echo CHtml::dropDownList('block_id', $model->block_id, CHtml::listData($blocks, 'id', 'name')); ?>
 			</div>
 		</div>
+		<?if($templates){?>
 		<div class="block">
 			<div>
 				<?php
@@ -44,12 +45,11 @@
 					$list[0] = 'Нет';
 					ksort($list, SORT_NUMERIC);
 				?>
-				<?if($templates){?>
+				
 				<?php echo CHtml::label('Загрузить из шаблона', 'template');?>
 				<?php echo CHtml::dropDownList('template-check', 0, $list);?>
-				<?}?>
-				
 			</div>
+		<?}?>
 		</div>
 		<div class="block">
 			<div class="row">

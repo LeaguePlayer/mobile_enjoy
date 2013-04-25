@@ -29,7 +29,7 @@ class ImageController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('delete', 'view', 'create', 'setsort', 'builder', 'getImage', 'createTemplate', 'getTemplate'),
+				'actions'=>array('delete', 'view', 'create', 'setsort', 'builder', 'getImage', 'createTemplate', 'getTemplate', 'deleteTemplate'),
 				'users'=>array('admin'),
 			),
 			array('deny',  // deny all users
@@ -47,6 +47,26 @@ class ImageController extends Controller
 		$this->render('view',array(
 			'model'=>$this->loadModel($id),
 		));
+	}
+
+	public function actionDeleteTemplate(){
+		header('Content-type: application/json');
+		if(!empty($_POST['id']) && $_POST['id'] > 0){
+			$template = Template::model()->findByPk($_POST['id']);
+			if($template && $template->delete()){
+				$result = array();
+				$templates = Template::model()->findAll();
+				if($templates){
+					foreach (Template::model()->findAll() as $value) {
+						$result[$value->id] = $value->name;
+					}
+					echo CJavaScript::jsonEncode($result);
+				}else{
+					echo CJavaScript::jsonEncode('no');
+				}
+			}
+		}
+		Yii::app()->end();
 	}
 
 	public function actionGetTemplate(){

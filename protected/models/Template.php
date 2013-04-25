@@ -10,6 +10,7 @@
  */
 class Template extends CActiveRecord
 {
+	private $uploadsDirName = '/uploads/template/';
 	/**
 	 * @return string the associated database table name
 	 */
@@ -93,5 +94,22 @@ class Template extends CActiveRecord
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+
+	protected function afterDelete(){
+		$templateDir = YiiBase::getPathOfAlias('webroot').$this->uploadsDirName.$this->id.'/';
+		//delete template files
+		$files = glob($templateDir.'*'); // get all file names
+		foreach($files as $file){ // iterate files
+		  if(is_file($file))
+		    unlink($file); // delete file
+		}
+
+		if(is_dir($templateDir)){
+			rmdir($templateDir);
+		}
+		
+
+		return parent::afterDelete();
 	}
 }

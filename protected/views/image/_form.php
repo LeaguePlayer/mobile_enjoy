@@ -42,12 +42,17 @@
 			<div>
 				<?php
 					$list =  CHtml::listData($templates, 'id', 'name');
+					$delete = CHtml::listData($templates, 'id', 'name');
 					$list[0] = 'Нет';
 					ksort($list, SORT_NUMERIC);
 				?>
 				
 				<?php echo CHtml::label('Загрузить из шаблона', 'template');?>
 				<?php echo CHtml::dropDownList('template-check', 0, $list);?>
+				<div style="margin: 5px 0;">
+					<?php echo CHtml::dropDownList('template-del', 0, $delete);?>
+					<a href="#delete-templte" id="del-template">Удалить шаблон</a>
+				</div>
 			</div>
 		</div>
 		<?}?>
@@ -178,15 +183,44 @@
 			$(this).parent().find('.template_name').fadeOut();
 	});
 
+	jQuery('#del-template').on('click', function(){
+		var template_id = $('#template-del').find('option:selected').val();
+		var name = $('#template-del').find('option:selected').text();
+		if(confirm("Вы действительно хотите удалить шаблон - "+name+"?")){
+			$.post('<?=Yii::app()->createUrl('image/deleteTemplate')?>',{id: template_id}, function(data){
+				if(data){
+					if(data == 'no'){
+						$('#template-del').parents('.block').hide();
+						return false;
+					}
+					var select = "";
+					jQuery.each(data, function(index, value){
+						select += '<option value="'+index+'">'+value+'</option>';
+					});
+					console.log(select);
+					$('#template-del').html(select);
+					select = '<option value="0">Нет</option>' + select;
+					$('#template-check').html(select);
+					//var objects = jQuery.parseJSON('{"name":"John"}');
+				}
+			});
+		}
+	});
+
 	jQuery('#template-check').change(function(){
 		var template_id = $(this).find('option:selected').val();
+		var c = $('#canvas').data('canvas');
 		//console.log(template_id);
+		if(template_id === 0){
+			c.clear();
+			c.renderAll();
+			return false;
+		}
 		if(confirm("Все данные на холсте будут потеряны. Продолжить?")){
 			$.post('<?=Yii::app()->createUrl('image/getTemplate')?>',{id: template_id}, function(data){
 				if(data){
-					var c = $('#canvas').data('canvas');
 					c.clear();
-					c.loadFromJSON(data);
+					c.loadFromDatalessJSON(data);
 					c.renderAll();
 				}
 

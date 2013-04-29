@@ -23,6 +23,8 @@ class PurchaseController extends Controller
 				echo CJavaScript::jsonEncode('Yes');
 			else
 				echo CJavaScript::jsonEncode('No');
+		}else{
+			echo CJavaScript::jsonEncode('No send data');
 		}
 		Yii::app()->end();
 	}
@@ -39,7 +41,7 @@ class PurchaseController extends Controller
 				echo CJavaScript::jsonEncode('Unable to insert');
 		}
 		else
-			echo CJavaScript::jsonEncode('No data');
+			echo CJavaScript::jsonEncode('No send data');
 
 		Yii::app()->end();
 	}

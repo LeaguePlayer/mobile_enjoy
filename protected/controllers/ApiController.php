@@ -62,7 +62,7 @@ class ApiController extends Controller
 		header('Content-type: application/json');
 		$model = Page::model()->findByPk(1);
 		$result = (object) array('response' => '');
-		$result->response = htmlspecialchars($model->content);
+		$result->response = $model->content;
 		echo CJavaScript::jsonEncode($result);
 		Yii::app()->end();
 	}

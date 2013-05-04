@@ -70,6 +70,7 @@ class PageController extends Controller
 		if(isset($_POST['Page']))
 		{
 			$model->attributes=$_POST['Page'];
+			$model->content = $_POST['Page']['content'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -94,6 +95,7 @@ class PageController extends Controller
 		if(isset($_POST['Page']))
 		{
 			$model->attributes=$_POST['Page'];
+			$model->content = $_POST['Page']['content'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}

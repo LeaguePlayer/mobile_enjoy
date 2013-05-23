@@ -65,14 +65,16 @@
 				<?php echo CHtml::label('Высота', 'c_height');?>
 				<?php echo CHtml::textField('c_height', 960);?>
 			</div>
+			<div>
+				<span style="font-size:11px;">* при размерах 640 по ширине и 960 по высоте - изображение для устройств до 4S отображается на полный экран.</span>
+			</div>
+			<div class="clear"><br></div>
 			<div class="row">
 				<?php echo CHtml::label('Цвет фона', 'color');?>
 				<div id="bg-canvas"><div></div></div>
 			</div>
 			<div class="clear"></div>
-			<div>
-				<span style="font-size:11px;">* при размерах 640 по ширине и 960 по высоте - изображение для устройств до 4S отображается на полный экран.</span>
-			</div>
+			
 		</div>
 		<div class="block">
 			<?php echo CHtml::textarea('text', 'text');?>

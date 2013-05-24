@@ -65,6 +65,7 @@
 				<?php echo CHtml::label('Высота', 'c_height');?>
 				<?php echo CHtml::textField('c_height', 960);?>
 			</div>
+			<div class="clear"></div>
 			<div>
 				<span style="font-size:11px;">* при размерах 640 по ширине и 960 по высоте - изображение для устройств до 4S отображается на полный экран.</span>
 			</div>

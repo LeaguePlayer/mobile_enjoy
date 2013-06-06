@@ -44,6 +44,7 @@ class ApiController extends Controller
 				//if(empty($item->preview) || $item->public == 0) continue;
 				$data['blocks'][$key]['id'] = $item->id;
 				$data['blocks'][$key]['name'] = $item->name;
+				$data['blocks'][$key]['desc'] = $item->desc;
 				$data['blocks'][$key]['price'] = $item->price;
 				$data['blocks'][$key]['images']['display'] = '/uploads/'.$item->preview;
 				$data['blocks'][$key]['images']['retina_display'] = '/uploads/retina/'.$item->preview;

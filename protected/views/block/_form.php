@@ -28,6 +28,12 @@ for($i = 0; $i <= 9; $i++){
 	</div>
 
 	<div class="row">
+		<?php echo $form->labelEx($model,'desc'); ?>
+		<?php echo $form->textArea($model,'desc', array('rows'=>6, 'cols' => 40,'maxlength'=>255)); ?>
+		<?php echo $form->error($model,'desc'); ?>
+	</div>
+
+	<div class="row">
 		<?php echo $form->labelEx($model,'price'); ?>
 		<?php echo $form->dropDownList($model,'price', $prices); ?>
 		<?php echo $form->error($model,'price'); ?>

@@ -27,17 +27,6 @@
 	var canvas = global.canvas = new fabric.Canvas('canvas');
 	canvas.setBackgroundColor('#ffffff');
 
-	//Обрабатываем событие клика на текстоый объект
-	canvas.on('object:selected', onObjectSelected);
-
-	function onObjectSelected(e){
-		var selectedObject = e.target;
-
-		if (selectedObject.type === 'text') {
-	      $('textarea#text').val(selectedObject.getText());
-	    }
-	}
-
 	var textEl = $('textarea#text');
 	if (textEl) {
 		textEl.focus(function(e){
@@ -59,17 +48,33 @@
 			}
 		});
 	}
+
+	//Change font-size
+	var textFontSizeField = jQuery('#text-font-size');
+	if (textFontSizeField) {
+		textFontSizeField.change(function() {
+			var activeObject = canvas.getActiveObject();
+			if (activeObject && activeObject.type === 'text') {
+				activeObject.setFontSize(parseInt(this.value, 10));
+				canvas.renderAll();
+			}
+		});
+	}
 	
 	jQuery('#add-text').click(function() {
 		var text = jQuery("textarea#text").val();
 		var color = jQuery("textarea#text").css('color');
 		var font = jQuery("#font").val();
+		var font_s = jQuery('#text-font-size').val();
 		var align = jQuery("#align").val();
+		var width_canvas = jQuery('#c_width').val();
 
+		console.log();
 	    var textSample = new fabric.Text(text, {
-			left: 30,
-			top: 30,
+			left: (width_canvas / 2),
+			top: 100,
 			fontFamily: font,
+			fontSize: parseInt(font_s, 10),
 			angle: 0,
 			fill: color,
 			scaleX: 1,
@@ -78,9 +83,10 @@
 			originX: 'left',
 			hasRotatingPoint: true
 	    });
+	    textSample = wrapCanvasText(textSample, canvas, width_canvas);
 	    canvas.add(textSample);
 	    canvas.renderAll();
-	    jQuery('#set-size').click();
+	    jQuery('#c_width').keyup();
 	    //updateComplexity();
  	});
 
@@ -103,6 +109,16 @@
  		}
 	    canvas.renderAll();
  	});
+
+ 	canvas.on('object:scaling', function(e) {
+		var activeObject = e.target;
+		if (activeObject.type === 'text') {
+			
+			// var textSample = wrapCanvasText(activeObject, canvas, activeObject.scaleX * activeObject.width);
+			// canvas.add(textSample);
+			// canvas.renderAll();
+		}
+	});
 
  	jQuery('#builder-form').submit(function(){
  		canvas.deactivateAll().renderAll();
@@ -177,6 +193,101 @@
 			canvas.renderAll();
 		}
 	});
+
+	//Обрабатываем событие клика на текстоый объект
+	canvas.on('object:selected', onObjectSelected);
+
+	function onObjectSelected(e){
+		var selectedObject = e.target;
+
+		if (selectedObject.type === 'text') {
+	      $('textarea#text').val(selectedObject.getText());
+	      textFontSizeField.val(selectedObject.get('fontSize'));
+	    }
+	}
+
+	/// Подгоняем текст под ширину и высоту
+	/// t:fabric.IText, canvas:HTMLCanvas, maxW:number, maxH:number
+	///
+	function wrapCanvasText(t, canvas, maxW, maxH) {
+
+	    if (typeof maxH === "undefined") { maxH = 0; }
+	    var words = t.text.split(" ");
+	    var formatted = '';
+
+	    // clear newlines
+	    var sansBreaks = t.text.replace(/(\r\n|\n|\r)/gm, "");  
+	    // calc line height
+	    var lineHeight = new fabric.Text(sansBreaks, {         
+	        fontFamily: t.fontFamily,
+	        fontSize: t.fontSize
+	    }).height;
+
+	    // adjust for vertical offset
+	    var maxHAdjusted = maxH > 0 ? maxH - lineHeight : 0;                  
+	    var context = canvas.getContext("2d");
+
+
+	    context.font = t.fontSize + "px " + t.fontFamily;
+	    var currentLine = "";
+	    var breakLineCount = 0;
+
+	    for(var n = 0; n < words.length; n++) {
+
+	        var isNewLine = currentLine == "";
+	        var testOverlap = currentLine + ' ' + words[n];
+
+	        // are we over width?
+	        var w = context.measureText(testOverlap).width;     
+
+	        if(w < maxW) {  // if not, keep adding words
+	            currentLine += words[n] + ' ';
+	            formatted += words[n] + ' ';
+	        } else {
+
+	            // if this hits, we got a word that need to be hypenated
+	            if(isNewLine) { 
+	                var wordOverlap = "";
+
+	                // test word length until its over maxW
+	                for(var i = 0; i < words[n].length; ++i) {
+
+	                    wordOverlap += words[n].charAt(i);
+	                    var withHypeh = wordOverlap + "-";
+
+	                    if(context.measureText(withHypeh).width >= maxW) {
+	                        // add hyphen when splitting a word
+	                        withHypeh = wordOverlap.substr(0, wordOverlap.length - 2) + "-";
+	                        // update current word with remainder
+	                        words[n] = words[n].substr(wordOverlap.length - 1, words[n].length);
+	                        formatted += withHypeh; // add hypenated word
+	                        break;
+	                    }
+	                }
+	            }
+	            n--; // restart cycle
+	            formatted += '\n';
+	            breakLineCount++;
+	            currentLine = "";
+	        }
+	        if(maxHAdjusted > 0 && (breakLineCount * lineHeight) > maxHAdjusted) {
+	            // add ... at the end indicating text was cutoff
+	            formatted = formatted.substr(0, formatted.length - 3) + "...\n"; 
+	            break;
+	        }
+	    }
+	    // get rid of empy newline at the end
+	    formatted = formatted.substr(0, formatted.length - 1); 
+
+	    var ret = new fabric.Text(formatted, { // return new text-wrapped text obj
+	        left: t.left,
+	        top: t.top,
+	        fill: t.fill, 
+	        fontFamily: t.fontFamily,
+	        fontSize: t.fontSize
+	    });
+	    return ret;
+	}
 
 	jQuery('#canvas').data('canvas', canvas);
 })(this);

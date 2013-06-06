@@ -20,6 +20,11 @@
 		'right'=>'Right',
 		'justify'=>'Justify'
 	);
+	//Font-sizes
+	$font_sizes = array();
+	for ($i=5; $i < 16; $i++) { 
+		$font_sizes[$i * 2] = ($i * 2).'px';
+	}
 ?>
 <div class="form">
 <div>
@@ -82,6 +87,10 @@
 			<div class="row">
 				<?php echo CHtml::label('Шрифт', 'font');?>
 				<?php echo CHtml::dropDownList('font','', $fonts);?>
+			</div>
+			<div class="row">
+				<?php echo CHtml::label('Размер шрифта', 'font-size');?>
+				<input id="text-font-size" type="range" min="1" step="1" max="130" value="22" />
 			</div>
 			<div class="row">
 				<?php echo CHtml::label('Цвет текста', 'color');?>

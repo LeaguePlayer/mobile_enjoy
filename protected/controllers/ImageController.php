@@ -182,7 +182,8 @@ class ImageController extends Controller
 		$am = Yii::app()->assetManager;
 
 		Yii::app()->getClientScript()->registerCoreScript('jquery');
-		$cs->registerCssFile($cs->getCoreScriptUrl().'/jui/css/base/jquery-ui.css', CClientScript::POS_HEAD);
+		Yii::app()->getClientScript()->registerCoreScript( 'jquery.ui' );
+		$cs->registerCssFile($cs->getCoreScriptUrl().'/jui/css/base/jquery-ui.css', 'screen');
 		//Include fancybox.js for Canvas
 		$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/fancybox/lib/jquery.mousewheel-3.0.6.pack.js'), CClientScript::POS_HEAD);
 		$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/fancybox/source/jquery.fancybox.js'), CClientScript::POS_HEAD);
@@ -191,10 +192,10 @@ class ImageController extends Controller
 		//Include my js file
 		$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/builder.js'), CClientScript::POS_END);
 		//Include color-picker
-		$cs->registerCssFile('/js/colorpicker/css/colorpicker.css', CClientScript::POS_HEAD);
+		$cs->registerCssFile('/js/colorpicker/css/colorpicker.css', 'screen');
 		$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/colorpicker/js/colorpicker.js'), CClientScript::POS_HEAD);
 
-		$cs->registerCssFile('/js/fancybox/source/jquery.fancybox.css', CClientScript::POS_HEAD);
+		$cs->registerCssFile('/js/fancybox/source/jquery.fancybox.css', 'screen');
 
 		if(isset($_POST['Image']))
 		{

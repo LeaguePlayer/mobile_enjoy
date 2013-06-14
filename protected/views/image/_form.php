@@ -31,8 +31,8 @@
 	<a class="builder fancybox" href="#builder">Создать через конструктор</a>
 </div>
 <div id="builder">
-	<div id="canvas-container">
-		<canvas id="canvas" width="640" height="740"></canvas>
+	<div id="canvas-container" style="min-height: 100px;">
+		<canvas id="canvas" width="640" height="960"></canvas>
 	</div>
 	<div id="settings">
 		<form name="settings" method="GET" action="">
@@ -183,6 +183,17 @@
 </div><!-- form -->
 
 <script type="text/javascript">
+	
+	$( "#canvas-container" ).resizable({
+		handles: "s",
+		resize: function(event, ui){
+			var c = $(this).find('canvas').data('canvas');
+			c.setHeight($(this).height());
+			$('#c_height').val($(this).height());
+			c.renderAll();
+		}
+	});
+
 	jQuery('.fancybox').fancybox({
 		width: 1000,
 		type: 'inline',

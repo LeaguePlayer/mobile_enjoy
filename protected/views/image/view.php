@@ -4,7 +4,6 @@
 
 $this->menu=array(
 	array('label'=>'Создать', 'url'=>array('create')),
-	array('label'=>'Конструктор', 'url'=>array('builder')),
 	array('label'=>'Назад', 'url'=>$_SERVER['HTTP_REFERER']),
 	array('label'=>'Удалить', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Вы уверены?'))
 );

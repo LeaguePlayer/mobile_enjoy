@@ -102,6 +102,7 @@
 	min-height: 740px;
 	float: left;
 	margin-right: 15px;
+	margin-bottom: 15px;
 }
 .canvas-container canvas{
 	border: 1px dashed #ccc;

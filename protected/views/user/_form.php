@@ -16,12 +16,6 @@
 	<?php echo $form->errorSummary($model); ?>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'name'); ?>
-		<?php echo $form->textField($model,'name',array('size'=>60,'maxlength'=>255)); ?>
-		<?php echo $form->error($model,'name'); ?>
-	</div>
-
-	<div class="row">
 		<?php echo $form->labelEx($model,'login'); ?>
 		<?php echo $form->textField($model,'login',array('size'=>60,'maxlength'=>255)); ?>
 		<?php echo $form->error($model,'login'); ?>

@@ -71,10 +71,12 @@
 	margin-bottom: 15px;
 }
 #settings .block textarea{
-	width: 330px;
+	width: 340px;
+	height: 160px;
 	font-family: Arial;
 	border: 1px solid #aaa;
 	border-radius: 2px;
+	margin-bottom: 10px;
 }
 #settings .save-block input{
 	background-color: green;

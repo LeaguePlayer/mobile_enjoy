@@ -16,12 +16,6 @@
 	<?php echo $form->errorSummary($model); ?>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'title'); ?>
-		<?php echo $form->textField($model,'title',array('size'=>60,'maxlength'=>255)); ?>
-		<?php echo $form->error($model,'title'); ?>
-	</div>
-
-	<div class="row">
 		<?php echo $form->labelEx($model,'content'); ?>
 		<?php $this->widget('application.extensions.tinymce.ETinyMce', array(
 			'model'=>$model,

@@ -267,21 +267,20 @@
 			parent.find('#template_name').css({background: 'none', color: '#000'});
 			var data = {template_name: name, template_json: JSON.stringify(c)};
 			$.post('<?=Yii::app()->createUrl('image/createTemplate')?>',{Template:{name: name, json: JSON.stringify(c)}}, function(data){
-				document.location.reload(true);
-			});
-			//console.log(JSON.stringify(c));
-		}else{
-			c.deactivateAll().renderAll();
- 			var image = c.toDataURL();
-			var block_id = $('#block_id').val();
-			
-			$.post('<?=Yii::app()->createUrl('image/builder')?>',{Image:{block_id: block_id, filename: image}}, function(data){
-				if(data == 'ok'){
-					document.location = "<?=Yii::app()->createUrl('block')?>/" + block_id;
-				}
 				//document.location.reload(true);
 			});
-			
+			//console.log(JSON.stringify(c));
 		}
+
+		c.deactivateAll().renderAll();
+		var image = c.toDataURL();
+		var block_id = $('#block_id').val();
+		
+		$.post('<?=Yii::app()->createUrl('image/builder')?>',{Image:{block_id: block_id, filename: image}}, function(data){
+			if(data == 'ok'){
+				document.location = "<?=Yii::app()->createUrl('block')?>/" + block_id;
+			}
+			//document.location.reload(true);
+		});
 	});
 </script>

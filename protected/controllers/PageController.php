@@ -28,7 +28,7 @@ class PageController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view','update'),
+				'actions'=>array('index','view','update','create'),
 				'users'=>array('admin'),
 			),
 			// array('allow', // allow authenticated user to perform 'create' and 'update' actions

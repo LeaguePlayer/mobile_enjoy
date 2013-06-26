@@ -69,7 +69,6 @@
 		var align = jQuery("#align").val();
 		var width_canvas = jQuery('#c_width').val();
 
-		console.log();
 	    var textSample = new fabric.Text(text, {
 			left: (width_canvas / 2),
 			top: 100,
@@ -84,6 +83,16 @@
 			hasRotatingPoint: true
 	    });
 	    textSample = wrapCanvasText(textSample, canvas, width_canvas);
+
+	    //Check size Height text and canvas
+	    if(canvas.getHeight() < textSample.height){
+	    	canvas.setHeight(textSample.height);
+	    	textSample.top = Math.ceil(textSample.height / 2);
+	    	jQuery('#c_height').val(textSample.top);
+	    }
+
+	    console.log(canvas.getHeight());
+
 	    canvas.add(textSample);
 	    canvas.renderAll();
 	    jQuery('#c_width').keyup();

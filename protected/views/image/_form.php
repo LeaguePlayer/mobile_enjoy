@@ -36,7 +36,7 @@
 	</div>
 	<div id="settings">
 		<form name="settings" method="GET" action="">
-		<div class="block">
+		<div class="block" style="display: none;">
 			<div>
 				<?php echo CHtml::label('Блок', 'block_id');?>
 				<?php echo CHtml::dropDownList('block_id', $model->block_id, CHtml::listData($blocks, 'id', 'name')); ?>
@@ -74,33 +74,33 @@
 			<div>
 				<span style="font-size:11px;">* при размерах 640 по ширине и 960 по высоте - изображение для устройств до 4S отображается на полный экран.</span>
 			</div>
-			<div class="clear"><br></div>
-			<div class="row">
+			<div class="clear"></div>			
+		</div>
+		<div class="block">
+			<div class="row" style="width: 100px;">
 				<?php echo CHtml::label('Цвет фона', 'color');?>
 				<div id="bg-canvas"><div></div></div>
 			</div>
-			<div class="clear"></div>
-			
-		</div>
-		<div class="block">
-			<?php echo CHtml::textarea('text', 'text');?>
-			<div class="row">
+			<div class="row" style="width: 100px;">
+				<?php echo CHtml::label('Цвет текста', 'color');?>
+				<div id="color-selector"><div></div></div>
+			</div>
+			<div class="row" style="width: 110px;">
 				<?php echo CHtml::label('Шрифт', 'font');?>
 				<?php echo CHtml::dropDownList('font','', $fonts);?>
 			</div>
+			<div class="clear"></div>
+			<?php echo CHtml::textarea('text', 'text');?>
 			<div class="row">
 				<?php echo CHtml::label('Размер шрифта', 'font-size');?>
 				<input id="text-font-size" type="range" min="1" step="1" max="130" value="22" />
 			</div>
 			<div class="row">
-				<?php echo CHtml::label('Цвет текста', 'color');?>
-				<div id="color-selector"><div></div></div>
+				<?php echo CHtml::button('Добавить текст', array('id' => 'add-text'));?>
 			</div>
 			<div class="clear"></div>
-			<?php echo CHtml::button('Добавить текст', array('id' => 'add-text'));?>
 		</div>
 		<div class="block">
-			<?php echo CHtml::label('Изображение', 'upload');?>
 			<?$this->widget('ext.EAjaxUpload.EAjaxUpload',
 			array(
 		        'id'=>'uploadFile',
@@ -199,6 +199,11 @@
 		type: 'inline',
 		afterShow: function(){
 			jQuery('#c_width, #c_height').keyup();
+			var fi = jQuery('.fancybox-inner');
+			var s = fi.find('#settings');
+			fi.scroll(function(){
+				s.animate({top: fi.scrollTop()}, {duration: 500, queue:false});
+			});
 		}
 	});
 

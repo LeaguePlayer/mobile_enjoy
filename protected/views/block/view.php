@@ -28,6 +28,7 @@ $this->menu=array(
 		<h2>Изображения в блоке</h2>
 		<div>Количество изображений - <strong><?=count($model->images)?></strong></div>
 		<div>Размер блока ~ <strong><?=round($arraySizes[$model->id] / (1024*1024), 3)." Мб"?></strong></div>
+		<div>PRODUCT ID: com.amobile.blocks.{<?=$model->id?>} (<a href="#copy" id="copy-button" data-clipboard-text="com.amobile.blocks.<?=$model->id?>">Скопировать строку</a>)</div>
 		<br>
 		<div class="images">
 			<?php if($model->images){
@@ -39,8 +40,16 @@ $this->menu=array(
 		</div>
 	</div>
 </div>
+<script type="text/javascript" src="/js/ZeroClipboard.js"></script>
 <script type="text/javascript">
 $(function() {
+	var clip = new ZeroClipboard( document.getElementById("copy-button"), {
+	 	moviePath: "/uploads/ZeroClipboard.swf"
+	});
+	clip.on( 'complete', function(client, args) {
+		alert("Текст скопирован в буффер обмена.");
+	});	
+
     $( ".images" ).sortable({
     	items: ".image",
         stop: function(event, ui){

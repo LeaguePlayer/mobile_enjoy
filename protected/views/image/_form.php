@@ -97,6 +97,7 @@
 			</div>
 			<div class="row">
 				<?php echo CHtml::button('Добавить текст', array('id' => 'add-text'));?>
+				<?php echo CHtml::button('Подстроить', array('id' => 'refresh-text'));?>
 			</div>
 			<div class="clear"></div>
 		</div>

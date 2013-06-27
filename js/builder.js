@@ -83,7 +83,7 @@
 			hasRotatingPoint: true
 	    });
 	    textSample = wrapCanvasText(textSample, canvas, width_canvas);
-
+	    textSample.top = Math.ceil(textSample.height / 2);
 	    //Check size Height text and canvas
 	    if(canvas.getHeight() < textSample.height){
 	    	canvas.setHeight(textSample.height);
@@ -98,6 +98,34 @@
 	    jQuery('#c_width').keyup();
 	    //updateComplexity();
  	});
+
+	jQuery('#refresh-text').click(function() {
+		var width_canvas = jQuery('#c_width').val();
+		var activeObject = canvas.getActiveObject();
+		var font_s = jQuery('#text-font-size').val();
+
+		if (activeObject && activeObject.type === 'text') {
+			activeObject.setText(activeObject.text.replace(/(\r\n|\n|\r)/gm, ""));	
+			var tmp = wrapCanvasText(activeObject, canvas, width_canvas);
+			
+			console.log(activeObject.text);
+			//someText = someText.replace(/(\r\n|\n|\r)/gm," ");
+			//newText.setFontSize(font_s);
+			canvas.remove(activeObject);
+
+			//Check size Height text and canvas
+		    if(canvas.getHeight() < tmp.height){
+		   		canvas.setHeight(tmp.height);
+		    	tmp.top = Math.ceil(tmp.height / 2);
+		    	jQuery('#c_height').val(tmp.top);
+		    }
+
+			canvas.add(tmp);
+			// console.log(activeObject.text);
+			// console.log(activeObject.getText());
+			canvas.renderAll();
+		}
+	});
 
  	jQuery('#c_width, #c_height').on('keyup', function(){
  		var self = jQuery(this);

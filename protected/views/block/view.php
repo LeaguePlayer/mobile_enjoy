@@ -28,7 +28,7 @@ $this->menu=array(
 		<h2>Изображения в блоке</h2>
 		<div>Количество изображений - <strong><?=count($model->images)?></strong></div>
 		<div>Размер блока ~ <strong><?=round($arraySizes[$model->id] / (1024*1024), 3)." Мб"?></strong></div>
-		<div>PRODUCT ID: <strong>com.amobile.blocks.{<?=$model->id?>}</strong> (<a href="#copy" id="copy-button" data-clipboard-text="com.amobile.blocks.<?=$model->id?>">Скопировать строку</a>)</div>
+		<div>PRODUCT ID: <strong>com.amobile.blocks.<?=$model->id?></strong> (<a href="#copy" id="copy-button" data-clipboard-text="com.amobile.blocks.<?=$model->id?>">Скопировать строку</a>)</div>
 		<br>
 		<div class="images">
 			<?php if($model->images){

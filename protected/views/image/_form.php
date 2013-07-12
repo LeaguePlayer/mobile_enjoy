@@ -202,9 +202,13 @@
 			jQuery('#c_width, #c_height').keyup();
 			var fi = jQuery('.fancybox-inner');
 			var s = fi.find('#settings');
-			fi.scroll(function(){
-				s.animate({top: fi.scrollTop()}, {duration: 500, queue:false});
-			});
+			//hot fix -- !
+			if($(window).height() >= 680){
+				fi.scroll(function(){
+					s.animate({top: fi.scrollTop()}, {duration: 500, queue:false});
+				});
+			}
+			
 		}
 	});
 

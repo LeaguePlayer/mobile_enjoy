@@ -204,10 +204,21 @@
 			var s = fi.find('#settings');
 			//hot fix -- !
 			if($(window).height() >= 680){
-				fi.scroll(function(){
+				fi.on('scroll', function(){
 					s.animate({top: fi.scrollTop()}, {duration: 500, queue:false});
 				});
 			}
+			$(window).resize(function(){
+				console.log
+				if($(window).height() >= 680){
+					fi.on('scroll', function(){
+						s.animate({top: fi.scrollTop()}, {duration: 500, queue:false});
+					});
+				}else{
+					fi.off('scroll');
+				}
+			});
+			
 			
 		}
 	});

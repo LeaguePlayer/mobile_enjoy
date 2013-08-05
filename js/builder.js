@@ -69,7 +69,7 @@
 		var align = jQuery("#align").val();
 		var width_canvas = jQuery('#c_width').val();
 
-	    var textSample = new fabric.Text(text, {
+	    var addText = new fabric.Text(text, {
 			left: (width_canvas / 2),
 			top: 100,
 			fontFamily: font,
@@ -82,13 +82,18 @@
 			originX: 'left',
 			hasRotatingPoint: true
 	    });
-	    textSample = wrapCanvasText(textSample, canvas, width_canvas);
+	    var textSample = wrapCanvasText(addText, canvas, width_canvas, 32766);
+
+	    /*if(textSample.height > 32766){ //fucking stop
+			textSample = wrapCanvasText(addText, canvas, width_canvas, 32766);
+		}*/
+
 	    textSample.top = Math.ceil(textSample.height / 2);
 	    //Check size Height text and canvas
 	    if(canvas.getHeight() < textSample.height){
 	    	canvas.setHeight(textSample.height);
 	    	textSample.top = Math.ceil(textSample.height / 2);
-	    	jQuery('#c_height').val(textSample.top);
+	    	jQuery('#c_height').val(Math.ceil(textSample.top));
 	    }
 
 	    console.log(canvas.getHeight());
@@ -108,7 +113,11 @@
 			activeObject.setText(activeObject.text.replace(/(\r\n|\n|\r)/gm, ""));	
 			var tmp = wrapCanvasText(activeObject, canvas, width_canvas);
 			
-			console.log(activeObject.text);
+
+			if(tmp.height > 32766){ //fucking stop
+				tmp = wrapCanvasText(activeObject, canvas, width_canvas, 32766);
+			}
+			//console.log(activeObject.text);
 			//someText = someText.replace(/(\r\n|\n|\r)/gm," ");
 			//newText.setFontSize(font_s);
 			canvas.remove(activeObject);
@@ -117,7 +126,7 @@
 		    if(canvas.getHeight() < tmp.height){
 		   		canvas.setHeight(tmp.height);
 		    	tmp.top = Math.ceil(tmp.height / 2);
-		    	jQuery('#c_height').val(tmp.top);
+		    	jQuery('#c_height').val(Math.ceil(tmp.height));
 		    }
 
 			canvas.add(tmp);
@@ -231,6 +240,17 @@
 		}
 	});
 
+	jQuery("#align").change(function(){
+		//jQuery("#text").css('font-family', jQuery(this).val());
+		var activeObject = canvas.getActiveObject();
+		if (activeObject && activeObject.type === 'text') {
+			var value = $(this).val();
+        	activeObject.textAlign = value;
+	        canvas._adjustPosition && canvas._adjustPosition(activeObject, value === 'justify' ? 'left' : value);
+	        canvas.renderAll();
+		}
+	});
+
 	//Обрабатываем событие клика на текстоый объект
 	canvas.on('object:selected', onObjectSelected);
 
@@ -323,8 +343,28 @@
 	        fontFamily: t.fontFamily,
 	        fontSize: t.fontSize
 	    });
+	    console.log(ret);
 	    return ret;
 	}
 
 	jQuery('#canvas').data('canvas', canvas);
 })(this);
+
+/*align
+
+var textAlignSwitch = document.getElementById('text-align');
+  if (textAlignSwitch) {
+    activeObjectButtons.push(textAlignSwitch);
+    textAlignSwitch.disabled = true;
+    textAlignSwitch.onchange = function() {
+      var activeObject = canvas.getActiveObject();
+      if (activeObject && activeObject.type === 'text') {
+        var value = this.value.toLowerCase();
+        activeObject.textAlign = value;
+        canvas._adjustPosition && canvas._adjustPosition(activeObject, value === 'justify' ? 'left' : value);
+        canvas.renderAll();
+      }
+    };
+  }
+
+*/

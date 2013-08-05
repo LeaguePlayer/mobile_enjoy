@@ -89,6 +89,10 @@
 				<?php echo CHtml::label('Шрифт', 'font');?>
 				<?php echo CHtml::dropDownList('font','', $fonts);?>
 			</div>
+			<div class="row" style="width: 110px;">
+				<?php echo CHtml::label('Выравнивание', 'align');?>
+				<?php echo CHtml::dropDownList('align','', $align);?>
+			</div>
 			<div class="clear"></div>
 			<?php echo CHtml::textarea('text', 'text');?>
 			<div class="row">

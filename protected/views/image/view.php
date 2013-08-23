@@ -3,7 +3,7 @@
 /* @var $model Image */
 
 $this->menu=array(
-	array('label'=>'Создать', 'url'=>array('create')),
+	array('label'=>'Создать', 'url'=>array('create?block='.$model->block_id)),
 	array('label'=>'Назад', 'url'=>$_SERVER['HTTP_REFERER']),
 	array('label'=>'Удалить', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Вы уверены?'))
 );

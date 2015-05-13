@@ -33,7 +33,7 @@
 /*-----builder-----*/
 #builder{
 	display: none;
-	width: 1020px;
+	width: 920px;
 	min-height: 748px;
 	position: relative;
 }
@@ -104,7 +104,7 @@
 		font-family: Arial;
 	}
 #canvas-container{
-	width: 640px;
+	width: 540px;
 	min-height: 740px;
 	float: left;
 	margin-right: 15px;
@@ -129,4 +129,203 @@ a.builder{
 	display: inline-block;
 	margin-bottom: 10px;
 	color: #000;
+}
+#preview_iphone
+{
+	position: absolute;
+	z-index: 9050;
+	width:100%;
+	/*text-align: center;*/
+	top:0;
+	left:0;
+	
+	height: 100%;
+
+	display: none;
+	
+}
+.bg
+{
+	 
+  	background-color: #000;
+	height: 100%;
+	width:100%;
+	opacity: 0.7;
+	position: absolute;
+	z-index: 9049;
+	display: none;
+	top:0;
+	left:0;
+}
+#preview_iphone .switch_device
+{
+	background-color: #fff;
+	width: 100%;
+	margin-bottom: 25px;
+}
+#preview_iphone .switch_device ul
+{
+	width: 980px;
+	margin: auto;
+	list-style: none;
+	text-align: center;
+	font-size:0;
+	letter-spacing: normal;
+	word-spacing: normal;
+}
+#preview_iphone .switch_device ul li
+{
+	display: inline-block;
+}
+#preview_iphone .switch_device ul li a:hover
+{
+	background-color: #C5EFF7;
+	color:#E67E22;
+}
+#preview_iphone .switch_device ul li a.active
+{
+	background-color: #1E824C;
+	color:#fff;
+}
+#preview_iphone .switch_device ul li a
+{
+	padding: 10px 20px;
+	display: inline-block;
+	text-decoration: none;
+	font-size: 13px;
+	
+	color:#000080;
+}
+.blur
+{
+	-webkit-filter: blur(3px);
+  -moz-filter: blur(3px);
+  -o-filter: blur(3px);
+  -ms-filter: blur(3px);
+  filter: blur(3px);
+}
+#preview_iphone .device .scroll
+{
+	overflow: auto;
+}
+#preview_iphone .device
+{
+	margin: auto;
+
+}
+#preview_iphone .device .screen img
+{
+	display: none;
+}
+#preview_iphone .device .screen
+{
+	overflow: hidden;
+	position: relative;
+	background: url(../img/loader.gif) no-repeat center center #000;
+}
+.bg.loader
+{
+	background: url(../img/loader.gif) no-repeat center center #000;
+}
+/*iphone6plus*/
+#preview_iphone .device.iphone6plus .screen
+{
+	width: 307px;
+	height: 541px;
+	left:22px;
+	top:83px;
+}
+#preview_iphone .device.iphone6plus
+{
+	background: url(../img/iphone6plus.png) no-repeat;
+	width: 350px;
+	height: 703px;
+}
+#preview_iphone .device.iphone6plus .scroll
+{
+	width: 322px;
+	height: 541px;
+}
+
+/*iphone6*/
+#preview_iphone .device.iphone6 .screen
+{
+	width: 261px;
+	height: 464px;
+	left:22px;
+	top:76px;
+}
+#preview_iphone .device.iphone6
+{
+	background: url(../img/iphone6.png) no-repeat;
+	width: 302px;
+	height: 613px;
+}
+#preview_iphone .device.iphone6 .scroll
+{
+	width: 276px;
+	height: 464px;
+}
+
+/*iphone5s*/
+#preview_iphone .device.iphone5s .screen
+{
+	width: 246px;
+	height: 406px;
+	left:21px;
+	top:71px;
+}
+#preview_iphone .device.iphone5s
+{
+	background: url(../img/iphone5s.png) no-repeat;
+	width: 285px;
+	height: 560px;
+}
+#preview_iphone .device.iphone5s .scroll
+{
+	width: 263px;
+	height: 408px;
+}
+
+/*iphone4s*/
+#preview_iphone .device.iphone4s .screen
+{
+	width: 240px;
+	height: 362px;
+	left:25px;
+	top:96px;
+}
+#preview_iphone .device.iphone4s
+{
+	background: url(../img/iphone4s.png) no-repeat;
+	width: 286px;
+	height: 547px;
+}
+#preview_iphone .device.iphone4s .scroll
+{
+	width: 255px;
+	height: 362px;
+}
+
+
+
+
+#settings .row input:read-only
+{
+	color: #cccccc;
+}
+#canvas-container .line
+{
+	z-index: 1;
+	width: 100%;
+	border-bottom: 1px dashed #f00;
+	position: absolute;
+}
+#canvas-container .line.top
+{
+	top: 72px;
+}
+#canvas-container .line.bottom
+{
+	bottom: 72px;
 }

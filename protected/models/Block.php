@@ -70,6 +70,33 @@ class Block extends CActiveRecord
 		);
 	}
 
+	public function behaviors()
+    {
+        return CMap::mergeArray(parent::behaviors(), array(
+			
+            'imgBehaviorPreview' => array(
+                'class' => 'application.behaviors.UploadableImageBehavior',
+                'attributeName' => 'preview',
+                'versions' => array(
+                    // 'icon' => array(
+                    //     'centeredpreview' => array(90, 90),
+                    // ),
+                    //    'small' => array(
+                    //         'adaptiveresize' => array(300, 220),
+                    // ),
+                    'retina' => array(
+                            'adaptiveresize' => array(253, 249),
+                    ),
+                    'original' => array(
+                            'adaptiveresize' => array(129, 127),
+                    ),
+                     
+                ),
+            ),
+
+        ));
+    }
+
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */

@@ -25,6 +25,10 @@
 	  }
 
 	var canvas = global.canvas = new fabric.Canvas('canvas');
+	// canvas.width = 200;
+	// console.log(canvas);
+	// console.log(canvas.scaleX);
+	// console.log(canvas.scaleY);
 	canvas.setBackgroundColor('#ffffff');
 
 	var textEl = $('textarea#text');
@@ -60,6 +64,8 @@
 			}
 		});
 	}
+
+
 	
 	jQuery('#add-text').click(function() {
 		var text = jQuery("textarea#text").val();
@@ -104,6 +110,19 @@
 	    //updateComplexity();
  	});
 
+	jQuery('#to-center').click(function() {
+		var width_canvas = jQuery('#c_width').val();
+		var activeObject = canvas.getActiveObject();
+		
+		activeObject.set('left', width_canvas/2  );
+		
+			
+			// console.log(activeObject.text);
+			// console.log(activeObject.getText());
+			canvas.renderAll();
+		
+	});
+
 	jQuery('#refresh-text').click(function() {
 		var width_canvas = jQuery('#c_width').val();
 		var activeObject = canvas.getActiveObject();
@@ -142,7 +161,7 @@
 
  		switch(self.attr('id')){
  			case 'c_width':{
- 				if(v > 640) v = 640;
+ 				if(v > 1080) v = 1080;
  				if(v < 100) v = 100;
  				canvas.setWidth(v);
  				break;
@@ -346,7 +365,7 @@
 	    console.log(ret);
 	    return ret;
 	}
-
+	
 	jQuery('#canvas').data('canvas', canvas);
 })(this);
 

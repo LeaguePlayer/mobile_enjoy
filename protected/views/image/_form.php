@@ -26,13 +26,16 @@
 		$font_sizes[$i * 2] = ($i * 2).'px';
 	}
 ?>
+
 <div class="form">
 <div>
 	<a class="builder fancybox" href="#builder">Создать через конструктор</a>
 </div>
 <div id="builder">
 	<div id="canvas-container" style="min-height: 100px;">
-		<canvas id="canvas" width="640" height="960"></canvas>
+	<div class="line top"></div>
+	<div class="line bottom"></div>
+		<canvas id="canvas" width="540" height="960"></canvas>
 	</div>
 	<div id="settings">
 		<form name="settings" method="GET" action="">
@@ -64,7 +67,7 @@
 		<div class="block">
 			<div class="row">
 				<?php echo CHtml::label('Ширина', 'c_width');?>
-				<?php echo CHtml::textField('c_width', 640);?>
+				<?php echo CHtml::textField('c_width', 540, array('readonly'=>true));?>
 			</div>
 			<div class="row">
 				<?php echo CHtml::label('Высота', 'c_height');?>
@@ -72,7 +75,7 @@
 			</div>
 			<div class="clear"></div>
 			<div>
-				<span style="font-size:11px;">* при размерах 640 по ширине и 960 по высоте - изображение для устройств до 4S отображается на полный экран.</span>
+				<span style="font-size:11px;">* при размерах 540 по ширине и 960 по высоте - изображение для устройств до 6+ отображается на полный экран.</span>
 			</div>
 			<div class="clear"></div>			
 		</div>
@@ -102,6 +105,7 @@
 			<div class="row">
 				<?php echo CHtml::button('Добавить текст', array('id' => 'add-text'));?>
 				<?php echo CHtml::button('Подстроить', array('id' => 'refresh-text'));?>
+				<?php echo CHtml::button('Выравнить по центру', array('id' => 'to-center'));?>
 			</div>
 			<div class="clear"></div>
 		</div>
@@ -117,6 +121,8 @@
 		               		var c = jQuery('#canvas').data('canvas');
 		               		fabric.Image.fromURL('/uploads/tmp/' + fileName, function(img) {
 								img.set('left', 100).set('top', 100);
+								img.set('width',img.width/2);
+								img.set('height',img.height/2);
 								c.add(img);
 								jQuery('#set-size').click();
 							});
@@ -146,6 +152,8 @@
 		<div class="save-block">
 			<div class="row">
 				<?php echo CHtml::button('Сохранить', array('id' => 'save-builder'));?>
+				<?php echo CHtml::button('Предпоказ', array('id' => 'preview'));?>
+				
 			</div>
 			<div class="clear"></div>
 		</div>
@@ -279,9 +287,120 @@
 		}
 	});
 
+	$(document).on('click','.switch_device ul li a',function(){
+		$lastActive = $('.switch_device ul li a.active');
+		$this = $(this);
+
+		if($this.data('device') == 'close')
+		{
+				$('#preview_iphone').hide();
+				$('.fancybox-overlay').removeClass('blur');
+				$('#preview_iphone .device').find('img').hide();
+				$('.bg').hide();
+		}
+		else
+		{
+			$lastActive.removeClass('active');
+			$('#preview_iphone .device').removeClass($lastActive.data('device'));
+			$('#preview_iphone .device').addClass($this.data('device'));
+			$this.addClass('active');
+			$('#preview_iphone .device').find('img').hide();
+			$('#preview').click();
+			
+		}
+		return false;
+	});
+
+	function resizeAllObjectsToBig()
+	{
+		var objects = canvas.getObjects();
+		for (var i in objects) {
+		    var scaleX = objects[i].scaleX;
+		    var scaleY = objects[i].scaleY;
+		    var left = objects[i].left;
+		    var top = objects[i].top;
+
+		    var tempScaleX = scaleX * 2;
+		    var tempScaleY = scaleY * 2;
+		    var tempLeft = left * 2;
+		    var tempTop = top * 2;
+
+		    objects[i].scaleX = tempScaleX;
+		    objects[i].scaleY = tempScaleY;
+		    objects[i].left = tempLeft;
+		    objects[i].top = tempTop;
+
+		    objects[i].setCoords();
+		}
+		canvas.setHeight( canvas.height*2 );
+		canvas.setWidth( canvas.width*2 );
+		// canvas.renderAll();
+	}
+
+	function resizeAllObjectsToSmall()
+	{
+		var objects = canvas.getObjects();
+		for (var i in objects) {
+		    var scaleX = objects[i].scaleX;
+		    var scaleY = objects[i].scaleY;
+		    var left = objects[i].left;
+		    var top = objects[i].top;
+
+		    var tempScaleX = scaleX / 2;
+		    var tempScaleY = scaleY / 2;
+		    var tempLeft = left / 2;
+		    var tempTop = top / 2;
+
+		    objects[i].scaleX = tempScaleX;
+		    objects[i].scaleY = tempScaleY;
+		    objects[i].left = tempLeft;
+		    objects[i].top = tempTop;
+
+		    objects[i].setCoords();
+		}
+		canvas.setHeight( canvas.height/2 );
+		canvas.setWidth( canvas.width/2 );
+		// canvas.renderAll();
+	}
+
+
+	jQuery('#preview').on('click', function(){
+		var c = $('#canvas').data('canvas');
+		c.deactivateAll();
+		var parent = $(this).closest('#builder');
+		var preview_iphone = $('#preview_iphone');
+		resizeAllObjectsToBig();
+		var image = c.toDataURL();
+		var device = $('.switch_device ul li a.active').data('device');
+		preview_iphone.show();
+		$('.fancybox-overlay').addClass('blur');
+		$('.bg').show();
+
+		$.ajax({
+		  type: "POST",
+		  url: '/image/previewImage/',
+		  data: {'image_base64': image, 'device': device},
+		  // dataType: 'json',
+		  success: function(data){
+		  	// console.log();
+		  	resizeAllObjectsToSmall();
+			  	preview_iphone.find('img').attr('src',data);
+				
+				
+				preview_iphone.find('img').show();
+		  },
+		});
+	});
+
+
+
+
 	jQuery('#save-builder').on('click', function(){
 		//Save as template
+		$('.fancybox-overlay').addClass('blur');
+		$('.bg').addClass('loader').show();
 		var c = $('#canvas').data('canvas');
+		resizeAllObjectsToBig();
 		var parent = $(this).closest('#builder');
 		if(parent.find('#template').is(':checked')){
 			var name = parent.find('#template_name').val();

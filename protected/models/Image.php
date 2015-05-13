@@ -48,6 +48,43 @@ class Image extends CActiveRecord
 		);
 	}
 
+	public function behaviors()
+    {
+        return CMap::mergeArray(parent::behaviors(), array(
+			
+            'imgBehaviorPreview' => array(
+                'class' => 'application.behaviors.UploadableImageBehavior',
+                'attributeName' => 'filename',
+                'versions' => array(
+                    // 'icon' => array(
+                    //     'centeredpreview' => array(90, 90),
+                    // ),
+                    //    'small' => array(
+                    //         'adaptiveresize' => array(300, 220),
+                    // ),
+                    'retina' => array(
+                            'adaptiveresize' => array(640, false),
+                    ),
+                    'iphone6' => array(
+                            'adaptiveresize' => array(750, false),
+                    ),
+                    'iphone6plus' => array(
+                            'adaptiveresize' => array(1080, false),
+                    ),
+                    'original' => array(
+                            'adaptiveresize' => array(320, false),
+                    ),
+                    'thumbs' => array(
+                            'adaptiveresize' => array(100, 100),
+                    ),
+                    
+                     
+                ),
+            ),
+
+        ));
+    }
+
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */

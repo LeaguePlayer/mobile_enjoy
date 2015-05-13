@@ -82,7 +82,7 @@ class BlockController extends Controller
 			$model->sort = 1000;
 
 			if($model->validate()){
-				$model->preview = $this->createImage($model->preview);
+				// $model->preview = $this->createImage($model->preview);
 				$model->save(false);
 				$this->redirect(array('view','id'=>$model->id));
 			}

@@ -29,7 +29,7 @@ class ImageController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('delete', 'view', 'create', 'setsort', 'builder', 'getImage', 'createTemplate', 'getTemplate', 'deleteTemplate'),
+				'actions'=>array('delete', 'view', 'PreviewImage', 'create', 'setsort', 'builder', 'getImage', 'createTemplate', 'getTemplate', 'deleteTemplate'),
 				'users'=>array('admin'),
 			),
 			array('deny',  // deny all users
@@ -172,7 +172,7 @@ class ImageController extends Controller
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
-	public function actionCreate()
+	public function actionCreate($block)
 	{
 		$model=new Image;
 
@@ -199,9 +199,11 @@ class ImageController extends Controller
 
 		if(isset($_POST['Image']))
 		{
-			$model->attributes=$_POST['Image'];
-			$file = CUploadedFile::getInstance($model,'filename');
-			$model->filename = $this->createImage($file->tempName, $file->extensionName, $model->block_id);
+			// $model->attributes=$_POST['Image'];
+			// $file = CUploadedFile::getInstance($model,'filename');
+			// $model->filename = $this->createImage($file->tempName, $file->extensionName, $model->block_id);
+			$model->filename = "1";
+			$model->block_id = $block;
 			
 			$model->sort = 1000;
 			if($model->save()){
@@ -253,6 +255,87 @@ class ImageController extends Controller
 		return '';
 	}
 
+	public function actionPreviewImage()
+	{
+
+		$uploadsDir =  YiiBase::getPathOfAlias('webroot').$this->uploadsDirName.'previews';
+		if(!is_dir($uploadsDir)) @mkdir($uploadsDir);
+
+		$base64img = $_POST['image_base64'];
+		$device = $_POST['device'];
+		
+
+		$base64img = str_replace("data:image/png;base64,", '', $base64img);
+		$data = base64_decode($base64img);
+
+		
+		
+        
+       
+       
+
+        $file = $uploadsDir . '/preview.png';//. $format[1];
+
+        file_put_contents($file, $data);
+
+        $thumb = Yii::app()->phpThumb->create($file);
+
+        $size = getimagesize($file);
+
+			// SiteHelper::mpr($size);die();
+
+			$iPhone6PlusWidth = $size[0];
+			$iPhone6PlusHeight = $size[1];
+
+			switch ($device) {
+				case 'iphone4s':
+						$height = round($iPhone6PlusHeight/4/1.32596685);
+						$width = round(320/1.33334);
+					break;
+
+				case 'iphone5s':
+						$height = round($iPhone6PlusHeight/2/2.36453202);
+						$width = round(640/2.60162602);
+						
+					break;
+
+				case 'iphone6':
+						$height = round($iPhone6PlusHeight/1.43928036/2.875);
+						$width = round(750/2.87356322);
+					break;
+
+				case 'iphone6plus':
+						$height = round($iPhone6PlusHeight/3.54898336);
+						$width = 307;
+					break;
+				
+				default:
+						die();
+					break;
+			}
+
+
+			
+		// echo $width;die();
+        $thumb->adaptiveResize($width, $height)->save($file);
+        
+		
+		// $data = file_get_contents($file);
+
+		$path = $file;
+		$type = pathinfo($path, PATHINFO_EXTENSION);
+		$data = file_get_contents($path);
+		echo 'data:image/' . $type . ';base64,' . base64_encode($data);
+
+		// $im = imagecreatefromstring($data);
+		// if ($im !== false) {
+		//     header('Content-Type: image/png');
+		//     imagepng($im);
+		//     imagedestroy($im);
+		// }
+		
+	}
+
 	//Save image
 	private function createBuildImage($file, $extension, $block){
 		if($file){
@@ -265,26 +348,47 @@ class ImageController extends Controller
 			$retinaDir = $blockDir.'retina/';
 			if(!is_dir($retinaDir)) @mkdir($retinaDir);
 
+			$iphone6Dir = $blockDir.'iphone6/';
+			if(!is_dir($iphone6Dir)) @mkdir($iphone6Dir);
+
+			$iphone5sDir = $blockDir.'iphone5s/';
+			if(!is_dir($iphone5sDir)) @mkdir($iphone5sDir);
+
+			$iphone6plusDir = $blockDir.'iphone6plus/';
+			if(!is_dir($iphone6plusDir)) @mkdir($iphone6plusDir);
+
 			$thumbDir = $blockDir.'thumbs/';
 			if(!is_dir($thumbDir)) @mkdir($thumbDir);
 
 			$thumb = Yii::app()->phpThumb->create($file);
 			$thumbDef = Yii::app()->phpThumb->create($file);
 			$thumbRetina = Yii::app()->phpThumb->create($file);
+			$thumbiPhone5s = Yii::app()->phpThumb->create($file);
+			$thumbiPhone6 = Yii::app()->phpThumb->create($file);
+			$thumbiPhone6plus = Yii::app()->phpThumb->create($file);
 
 			$fileName = md5(mktime()).".".$extension;
 
 			$size = getimagesize($file);
 
-			$retinaW = $size[0];
-			$retinaH = $size[1];
+			// SiteHelper::mpr($size);die();
 
-			$defW = floor($size[0]/2);
-			$defH = floor($size[1]/2);
+			$iPhone6PlusWidth = $size[0];
+			$iPhone6PlusHeight = $size[1];
+
+			// $defW = floor($size[0]/2);
+			$defH = floor($iPhone6PlusHeight/4);
+			$retinaH = floor($iPhone6PlusHeight/2);
+			$iphone6H = round($iPhone6PlusHeight/1.43928036);
+			$iphone5H = round($iPhone6PlusHeight/1.69014085);
 
 			$thumb->adaptiveResize(100, 100)->save($thumbDir.$fileName);
-			$thumbDef->resize($defW, $defH)->save($blockDir.$fileName);
-			$thumbRetina->resize($retinaW, $retinaH)->save($retinaDir.$fileName);
+			$thumbDef->adaptiveResize(320, $defH)->save($blockDir.$fileName);
+			$thumbiPhone5s->adaptiveResize(640, $iphone5H)->save($iphone5sDir.$fileName);
+			$thumbiPhone6->adaptiveResize(750, $iphone6H)->save($iphone6Dir.$fileName);
+			$thumbRetina->adaptiveResize(640, $retinaH)->save($retinaDir.$fileName);
+
+			$thumbiPhone6plus->resize($iPhone6PlusWidth, $iPhone6PlusHeight)->save($iphone6plusDir.$fileName);
 
 			return $fileName;
 		}

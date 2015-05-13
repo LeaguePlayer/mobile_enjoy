@@ -1,11 +1,8 @@
 <?php
 class EThumbnail extends CComponent
 {
-  /**
-   * @var ThumbBase
-   */
-  private $_thumbnail;
-
+    private $_thumbnail;
+    
     public function __construct($thumbnail) {
         $this->_thumbnail=$thumbnail;
     }
@@ -115,37 +112,6 @@ class EThumbnail extends CComponent
     {
             $this->_thumbnail=$this->_thumbnail->show();
             return $this;
-    }
-
-    /**
-     * Add watermark to Image
-     *
-     * @param $wm
-     * @param $pos
-     * @param $opacity
-     * @param $offsetX
-     * @param $offsetY
-     *
-     * @return EThumbnail
-     */
-    public function addWatermark($wm, $pos, $opacity, $offsetX, $offsetY)
-    {
-            $this->_thumbnail=$this->_thumbnail->addWatermark($wm->_thumbnail, $pos, $opacity, $offsetX, $offsetY);
-            return $this;
-    }
-	
-	
-	public function centeredpreview($width, $height)
-    {
-		$currentDimensions = $this->_thumbnail->getCurrentDimensions();
-		$currentWidth = $currentDimensions['width'];
-		$currentHeight = $currentDimensions['height'];
-        if ($currentWidth / $currentHeight > $width / $height) {
-            $res = $this->_thumbnail->resize(0, $height);
-        } else {
-            $res = $this->_thumbnail->resize($width, 0);
-        }
-        return $this->_thumbnail = $res->cropFromCenter($width, $height);
     }
 }
 ?>

@@ -29,6 +29,7 @@ class Image extends CActiveRecord
 			array('filename, block_id', 'required'),
 			array('block_id, sort', 'numerical', 'integerOnly'=>true),
 			array('filename', 'length', 'max'=>255),
+			array('json_canvas', 'safe'),
 			//array('filename', 'file', 'safe' => true, 'types'=>'jpg, jpeg, gif, png'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.

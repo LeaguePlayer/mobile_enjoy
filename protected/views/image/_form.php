@@ -26,10 +26,11 @@
 		$font_sizes[$i * 2] = ($i * 2).'px';
 	}
 ?>
-
+<? echo CHtml::hiddenField('json_canvas', $model->json_canvas); ?>
+<? echo CHtml::hiddenField('image_id', $model->id); ?>
 <div class="form">
 <div>
-	<a class="builder fancybox" href="#builder">Создать через конструктор</a>
+	<a class="builder fancybox" href="#builder"><? echo (empty($model->json_canvas)) ? "Создать" : "Редактировать"; ?> через конструктор</a>
 </div>
 <div id="builder">
 	<div id="canvas-container" style="min-height: 100px;">
@@ -152,8 +153,7 @@
 		<div class="save-block">
 			<div class="row">
 				<?php echo CHtml::button('Сохранить', array('id' => 'save-builder'));?>
-				<?php echo CHtml::button('Предпоказ', array('id' => 'preview'));?>
-				
+				<?php echo CHtml::button('Предпоказ', array('id' => 'preview'));?>				
 			</div>
 			<div class="clear"></div>
 		</div>
@@ -161,37 +161,39 @@
 	</div>
 </div>
 
-<h2 style="margin-top: 20px;">Загрузить обычное изображение</h2>
+<? if(empty($model->json_canvas)) { ?>
+	<h2 style="margin-top: 20px;">Загрузить обычное изображение</h2>
 
-<?php $form=$this->beginWidget('CActiveForm', array(
-	'id'=>'image-form',
-	'enableAjaxValidation'=>false,
-	'htmlOptions' => array('enctype' => 'multipart/form-data'),
-)); ?>
+	<?php $form=$this->beginWidget('CActiveForm', array(
+		'id'=>'image-form',
+		'enableAjaxValidation'=>false,
+		'htmlOptions' => array('enctype' => 'multipart/form-data'),
+	)); ?>
 
-	<p class="note">Обязательные поля <span class="required">*</span></p>
+		<p class="note">Обязательные поля <span class="required">*</span></p>
 
-	<?php echo $form->errorSummary($model); ?>
+		<?php echo $form->errorSummary($model); ?>
 
-	<?php echo CHtml::hiddenField('back', (!empty($_GET['block']) ? true : false));?>
+		<?php echo CHtml::hiddenField('back', (!empty($_GET['block']) ? true : false));?>
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'filename'); ?>
-		<?php echo $form->fileField($model,'filename'); ?>
-		<?php echo $form->error($model,'filename'); ?>
-	</div>
+		<div class="row">
+			<?php echo $form->labelEx($model,'filename'); ?>
+			<?php echo $form->fileField($model,'filename'); ?>
+			<?php echo $form->error($model,'filename'); ?>
+		</div>
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'block_id'); ?>
-		<?php echo $form->dropDownList($model,'block_id', CHtml::listData($blocks, 'id', 'name')); ?>
-		<?php echo $form->error($model,'block_id'); ?>
-	</div>
+		<div class="row">
+			<?php echo $form->labelEx($model,'block_id'); ?>
+			<?php echo $form->dropDownList($model,'block_id', CHtml::listData($blocks, 'id', 'name')); ?>
+			<?php echo $form->error($model,'block_id'); ?>
+		</div>
 
-	<div class="row buttons">
-		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
-	</div>
+		<div class="row buttons">
+			<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
+		</div>
 
-<?php $this->endWidget(); ?>
+	<?php $this->endWidget(); ?>
+<? } ?>
 
 </div><!-- form -->
 
@@ -313,6 +315,7 @@
 
 	function resizeAllObjectsToBig()
 	{
+		var canvas = $('#canvas').data('canvas');
 		var objects = canvas.getObjects();
 		for (var i in objects) {
 		    var scaleX = objects[i].scaleX;
@@ -337,8 +340,9 @@
 		// canvas.renderAll();
 	}
 
-	function resizeAllObjectsToSmall()
+	function resizeAllObjectsToSmallWithOutCanvas()
 	{
+		var canvas = $('#canvas').data('canvas');
 		var objects = canvas.getObjects();
 		for (var i in objects) {
 		    var scaleX = objects[i].scaleX;
@@ -358,9 +362,22 @@
 
 		    objects[i].setCoords();
 		}
+		
+		canvas.renderAll();
+	}
+
+	function resizeAllObjectsToSmallWithCanvas()
+	{
+		resizeAllObjectsToSmallWithOutCanvas();
 		canvas.setHeight( canvas.height/2 );
 		canvas.setWidth( canvas.width/2 );
-		// canvas.renderAll();
+	}
+
+	function loadForUpdateImage()
+	{
+		resizeAllObjectsToSmallWithOutCanvas();
+		$('.fancybox-overlay').removeClass('blur');
+		$('.bg').removeClass('loader').hide();
 	}
 
 
@@ -383,7 +400,7 @@
 		  // dataType: 'json',
 		  success: function(data){
 		  	// console.log();
-		  	resizeAllObjectsToSmall();
+		  	resizeAllObjectsToSmallWithCanvas();
 			  	preview_iphone.find('img').attr('src',data);
 				
 				
@@ -419,12 +436,38 @@
 		c.deactivateAll().renderAll();
 		var image = c.toDataURL();
 		var block_id = $('#block_id').val();
-		
-		$.post('<?=Yii::app()->createUrl('image/builder')?>',{Image:{block_id: block_id, filename: image}}, function(data){
+		var json = JSON.stringify( c.toJSON() );
+		var image_id = $('#image_id').val();
+		var url = (image_id > 0) ? '/image/builder/id_image/'+image_id : '/image/builder';
+		$.post(url,{Image:{block_id: block_id, filename: image, json_canvas: json}}, function(data){
 			if(data == 'ok'){
 				document.location = "<?=Yii::app()->createUrl('block')?>/" + block_id;
 			}
 			//document.location.reload(true);
 		});
+	});
+
+	$(document).ready(function(){
+		var json_canvas = $('#json_canvas').val();
+		if(json_canvas)
+		{
+			$('.fancybox-overlay').addClass('blur');
+			$('.bg').addClass('loader').show();
+
+			$('.builder').click();
+			var c = $('#canvas').data('canvas');
+			console.log(c);
+			console.log(json_canvas);
+			// parse the data into the canvas
+			  c.loadFromJSON(json_canvas);
+			  // resizeAllObjectsToSmallWithOutCanvas();
+
+
+			  // re-render the c
+			  // c.renderAll();
+			  setTimeout(loadForUpdateImage, 1000)
+
+		}
+
 	});
 </script>

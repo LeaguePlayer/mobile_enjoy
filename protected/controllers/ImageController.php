@@ -29,7 +29,7 @@ class ImageController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('delete', 'view', 'PreviewImage', 'create', 'setsort', 'builder', 'getImage', 'createTemplate', 'getTemplate', 'deleteTemplate'),
+				'actions'=>array('delete', 'view', 'PreviewImage', 'create', 'setsort', 'builder', 'getImage', 'createTemplate', 'getTemplate', 'deleteTemplate', 'update'),
 				'users'=>array('admin'),
 			),
 			array('deny',  // deny all users
@@ -129,8 +129,8 @@ class ImageController extends Controller
 		Yii::app()->end();
 	}
 
-	public function actionBuilder(){
-		$model=new Image;
+	public function actionBuilder($id_image = false){
+		$model = (is_numeric($id_image)) ? Image::model()->findByPk($id_image) : new Image;
 
 		if(isset($_POST['Image']))
 		{
@@ -145,16 +145,20 @@ class ImageController extends Controller
 				$folder = YiiBase::getPathOfAlias('webroot').$this->uploadsDirName.'tmp/';
 				if(!is_dir($folder)) @mkdir($folder);
 
-				$file = $folder.'create'.'.png';
-				
+				$folder_block = $folder.$model->block_id.'/';
+				if(!is_dir($folder_block)) @mkdir($folder_block);
+
+				$rand = rand(0,99999);
+				$file = $folder_block.'create'.$rand.'.png';
+				// echo $file;die();
 				if(file_put_contents($file, $data)){
 					$model->filename = $this->createBuildImage($file, 'png', $model->block_id);
 				}
 				//delete tmp files
 				$files = glob($folder.'*'); // get all file names
 				foreach($files as $file){ // iterate files
-				  if(is_file($file))
-				    unlink($file); // delete file
+				  // if(is_file($file))
+				    // unlink($file); // delete file
 				}
 			}
 
@@ -421,20 +425,54 @@ class ImageController extends Controller
 	 */
 	public function actionUpdate($id)
 	{
-		$model=$this->loadModel($id);
+		$model=Image::model()->findByPk($id);
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
+		$cs = Yii::app()->clientScript;
+		$am = Yii::app()->assetManager;
+
+		Yii::app()->getClientScript()->registerCoreScript('jquery');
+		Yii::app()->getClientScript()->registerCoreScript( 'jquery.ui' );
+		$cs->registerCssFile($cs->getCoreScriptUrl().'/jui/css/base/jquery-ui.css', 'screen');
+		//Include fancybox.js for Canvas
+		$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/fancybox/lib/jquery.mousewheel-3.0.6.pack.js'), CClientScript::POS_HEAD);
+		$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/fancybox/source/jquery.fancybox.js'), CClientScript::POS_HEAD);
+		//Include Fabric.js for Canvas
+		$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/fabricjs/all.js'), CClientScript::POS_HEAD);
+		//Include my js file
+		$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/builder.js'), CClientScript::POS_END);
+		//Include color-picker
+		$cs->registerCssFile('/js/colorpicker/css/colorpicker.css', 'screen');
+		$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/colorpicker/js/colorpicker.js'), CClientScript::POS_HEAD);
+
+		$cs->registerCssFile('/js/fancybox/source/jquery.fancybox.css', 'screen');
 
 		if(isset($_POST['Image']))
 		{
-			$model->attributes=$_POST['Image'];
-			if($model->save())
+			// $model->attributes=$_POST['Image'];
+			// $file = CUploadedFile::getInstance($model,'filename');
+			// $model->filename = $this->createImage($file->tempName, $file->extensionName, $model->block_id);
+			$model->filename = "1";
+			// $model->block_id = $block;
+			
+			$model->sort = 1000;
+			if($model->update()){
+				if(!empty($_POST['back']))
+					$this->redirect(array('block/view','id'=>$_GET['block']));
 				$this->redirect(array('view','id'=>$model->id));
+			}
+				
 		}
 
-		$this->render('update',array(
+		$blocks = Block::model()->findAll();
+		if(!empty($_GET['block']))
+			$model->block_id = $_GET['block'];
+
+		$this->render('create',array(
 			'model'=>$model,
+			'blocks'=>$blocks,
+			'templates' => Template::model()->findAll()
 		));
 	}
 

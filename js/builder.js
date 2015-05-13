@@ -65,6 +65,24 @@
 		});
 	}
 
+	$('#test').click(function(){
+		var json = JSON.stringify( canvas.toJSON() );
+		console.log(json);
+
+		canvas.clear();
+ 		canvas.renderAll();
+
+		// parse the data into the canvas
+  canvas.loadFromJSON(json);
+
+  // re-render the canvas
+  canvas.renderAll();
+
+  // optional
+  // canvas.calculateOffset();
+	});
+
+
 
 	
 	jQuery('#add-text').click(function() {

@@ -241,8 +241,10 @@ class BlockController extends Controller
 		$pathToUploads = YiiBase::getPathOfAlias('webroot').$this->uploadsDirName;
 		if(is_numeric($id) && $id > 0){
 			$image = Image::model()->findByPk($id);
-			$size += filesize($pathToUploads."{$image->block_id}/retina/".$image->filename);
-			$size += filesize($pathToUploads."{$image->block_id}/thumbs/".$image->filename);
+			if(is_file($pathToUploads."{$image->block_id}/retina/".$image->filename))
+				$size += filesize($pathToUploads."{$image->block_id}/retina/".$image->filename);
+			if(is_file($pathToUploads."{$image->block_id}/thumbs/".$image->filename))
+				$size += filesize($pathToUploads."{$image->block_id}/thumbs/".$image->filename);
 		}
 		return round($size / (1024*1024), 3)." Мб";
 	}

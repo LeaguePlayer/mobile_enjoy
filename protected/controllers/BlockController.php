@@ -218,11 +218,17 @@ class BlockController extends Controller
 				foreach ($blocks as $item) {
 					$id = $item->id;
 					$arraySizes[$id] = 0;
-					$arraySizes[$id] += filesize($pathToUploads.$item->preview);
-					$arraySizes[$id] += filesize($pathToUploads.'retina/'.$item->preview);
+					if(is_file($pathToUploads.$item->preview))
+						$arraySizes[$id] += filesize($pathToUploads.$item->preview);
+					if(is_file($pathToUploads.'retina/'.$item->preview))
+						$arraySizes[$id] += filesize($pathToUploads.'retina/'.$item->preview);
 					foreach ($item->images as $image) {
-						$arraySizes[$id] += filesize($pathToUploads."{$image->block_id}/retina/".$image->filename);
-						$arraySizes[$id] += filesize($pathToUploads."{$image->block_id}/thumbs/".$image->filename);
+						if(is_file($pathToUploads."{$image->block_id}/retina/".$image->filename))
+							$arraySizes[$id] += filesize($pathToUploads."{$image->block_id}/retina/".$image->filename);
+						if(is_file($pathToUploads."{$image->block_id}/thumbs/".$image->filename))
+							$arraySizes[$id] += filesize($pathToUploads."{$image->block_id}/thumbs/".$image->filename);
+						
+						
 					}
 				}
 			}

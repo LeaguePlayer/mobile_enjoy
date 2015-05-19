@@ -28,9 +28,10 @@
 ?>
 <? echo CHtml::hiddenField('json_canvas', $model->json_canvas); ?>
 <? echo CHtml::hiddenField('image_id', $model->id); ?>
+<? echo CHtml::hiddenField('url_iphone6plus', "/uploads/{$model->block_id}/iphone6plus/".CHtml::encode($model->filename)); ?>
 <div class="form">
 <div>
-	<a class="builder fancybox" href="#builder"><? echo (empty($model->json_canvas)) ? "Создать" : "Редактировать"; ?> через конструктор</a>
+	<a class="builder fancybox" href="#builder"><? echo (!isset($model->id)) ? "Создать" : "Редактировать"; ?> через конструктор</a>
 </div>
 <div id="builder">
 	<div id="canvas-container" style="min-height: 100px;">
@@ -87,28 +88,34 @@
 			</div>
 			<div class="row" style="width: 100px;">
 				<?php echo CHtml::label('Цвет текста', 'color');?>
-				<div id="color-selector"><div></div></div>
+				<div data-color='#000000' id="color-selector"><div></div></div>
 			</div>
 			<div class="row" style="width: 110px;">
 				<?php echo CHtml::label('Шрифт', 'font');?>
 				<?php echo CHtml::dropDownList('font','', $fonts);?>
 			</div>
-			<div class="row" style="width: 110px;">
-				<?php echo CHtml::label('Выравнивание', 'align');?>
-				<?php echo CHtml::dropDownList('align','', $align);?>
-			</div>
+			
 			<div class="clear"></div>
 			<?php echo CHtml::textarea('text', 'text');?>
 			<div class="row">
 				<?php echo CHtml::label('Размер шрифта', 'font-size');?>
-				<input id="text-font-size" type="range" min="1" step="1" max="130" value="22" />
+				<input id="text-font-size" name="text-font-size" type="range" min="10" step="1" max="130" value="22" />
+				<output for="text-font-size" onforminput="value = foo.valueAsNumber;"></output>
 			</div>
 			<div class="row">
 				<?php echo CHtml::button('Добавить текст', array('id' => 'add-text'));?>
-				<?php echo CHtml::button('Подстроить', array('id' => 'refresh-text'));?>
-				<?php echo CHtml::button('Выравнить по центру', array('id' => 'to-center'));?>
+				<?php echo CHtml::button('Выстроить по ширине', array('id' => 'refresh-text'));?>
 			</div>
 			<div class="clear"></div>
+		</div>
+		<div class="block">
+			Выравнять:
+			<div class="clear"></div>
+				<?php echo CHtml::button('По левому краю', array('id' => 'to-left'));?>
+				<?php echo CHtml::button('По центру', array('id' => 'to-center'));?>
+				<?php echo CHtml::button('По правому краю', array('id' => 'to-right'));?>
+			
+			
 		</div>
 		<div class="block">
 			<?$this->widget('ext.EAjaxUpload.EAjaxUpload',
@@ -161,7 +168,7 @@
 	</div>
 </div>
 
-<? if(empty($model->json_canvas)) { ?>
+<? if(empty($model->id)) { ?>
 	<h2 style="margin-top: 20px;">Загрузить обычное изображение</h2>
 
 	<?php $form=$this->beginWidget('CActiveForm', array(
@@ -205,6 +212,11 @@
 			var c = $(this).find('canvas').data('canvas');
 			c.setHeight($(this).height());
 			$('#c_height').val($(this).height());
+			if($('#c_height').val() < 960)
+				  			$('.line.bottom').hide();
+				  		else
+				  			$('.line.bottom').show();
+
 			c.renderAll();
 		}
 	});
@@ -378,6 +390,8 @@
 		resizeAllObjectsToSmallWithOutCanvas();
 		$('.fancybox-overlay').removeClass('blur');
 		$('.bg').removeClass('loader').hide();
+
+		
 	}
 
 
@@ -393,6 +407,12 @@
 		$('.fancybox-overlay').addClass('blur');
 		$('.bg').show();
 
+		setTimeout(w8forPreview(preview_iphone, image, device), 1000);
+		
+	});
+
+	function w8forPreview(preview_iphone, image, device)
+	{
 		$.ajax({
 		  type: "POST",
 		  url: '/image/previewImage/',
@@ -407,7 +427,7 @@
 				preview_iphone.find('img').show();
 		  },
 		});
-	});
+	}
 
 
 
@@ -447,27 +467,65 @@
 		});
 	});
 
+
+
 	$(document).ready(function(){
+		$('#color-selector div').css('background-color', $('#color-selector').data('color'));
+
 		var json_canvas = $('#json_canvas').val();
-		if(json_canvas)
+		var image_id = $('#image_id').val();
+		console.log(image_id);
+		if(image_id)
 		{
+			var c = $('#canvas').data('canvas');
 			$('.fancybox-overlay').addClass('blur');
 			$('.bg').addClass('loader').show();
-
 			$('.builder').click();
-			var c = $('#canvas').data('canvas');
-			console.log(c);
-			console.log(json_canvas);
-			// parse the data into the canvas
-			  c.loadFromJSON(json_canvas);
-			  // resizeAllObjectsToSmallWithOutCanvas();
+			if(json_canvas)
+			{
+				
+
+				
+				
+				console.log(c);
+				console.log(json_canvas);
+				// parse the data into the canvas
+				  c.loadFromJSON(json_canvas);
+				  // resizeAllObjectsToSmallWithOutCanvas();
 
 
-			  // re-render the c
-			  // c.renderAll();
-			  setTimeout(loadForUpdateImage, 1000)
+				  // re-render the c
+				  // c.renderAll();
+				  // setTimeout(loadForUpdateImage, 1000);
 
+			}
+			else
+			{
+				var url_img = $('#url_iphone6plus').val();
+			
+
+				  fabric.Image.fromURL(url_img, function(oImg) {
+				  	oImg.set({left:oImg.width/2, top:oImg.height/2});
+				  	console.log(oImg.width);
+				  	console.log(oImg.height);
+				  	// oImg.right = 0;
+				  		$('#c_height').val(oImg.height/2);
+
+				  		if($('#c_height').val() < 960)
+				  			$('.line.bottom').hide();
+				  		else
+				  			$('.line.bottom').show();
+
+					  c.add(oImg);
+					});
+			}
+			
+			
+
+			setTimeout(loadForUpdateImage, 1000);
 		}
+		
+
 
 	});
 </script>

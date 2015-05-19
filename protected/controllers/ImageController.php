@@ -194,7 +194,7 @@ class ImageController extends Controller
 		//Include Fabric.js for Canvas
 		$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/fabricjs/all.js'), CClientScript::POS_HEAD);
 		//Include my js file
-		$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/builder.js'), CClientScript::POS_END);
+		$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/builder.js?v=1.01'), CClientScript::POS_END);
 		//Include color-picker
 		$cs->registerCssFile('/js/colorpicker/css/colorpicker.css', 'screen');
 		$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/colorpicker/js/colorpicker.js'), CClientScript::POS_HEAD);
@@ -261,7 +261,7 @@ class ImageController extends Controller
 
 	public function actionPreviewImage()
 	{
-
+		// SiteHelper::mpr($_POST);die();
 		$uploadsDir =  YiiBase::getPathOfAlias('webroot').$this->uploadsDirName.'previews';
 		if(!is_dir($uploadsDir)) @mkdir($uploadsDir);
 
@@ -441,7 +441,7 @@ class ImageController extends Controller
 		//Include Fabric.js for Canvas
 		$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/fabricjs/all.js'), CClientScript::POS_HEAD);
 		//Include my js file
-		$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/builder.js'), CClientScript::POS_END);
+		$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/builder.js?v=1.01'), CClientScript::POS_END);
 		//Include color-picker
 		$cs->registerCssFile('/js/colorpicker/css/colorpicker.css', 'screen');
 		$cs->registerScriptFile($am->publish(Yii::getPathOfAlias('webroot').'/js/colorpicker/js/colorpicker.js'), CClientScript::POS_HEAD);

@@ -14,5 +14,5 @@ $this->menu=array(
 
 <div id="images">
 	<?php echo CHtml::image("/uploads/{$model->block_id}/".CHtml::encode($model->filename));?><br><br>
-	<?php echo CHtml::image("/uploads/{$model->block_id}/retina/".CHtml::encode($model->filename));?>
+	<?php // echo CHtml::image("/uploads/{$model->block_id}/retina/".CHtml::encode($model->filename));?>
 </div>

@@ -82,12 +82,26 @@
   // canvas.calculateOffset();
 	});
 
-
+	// $('canvas').click(function(){
+	// 	console.log('ds');
+	// });
 
 	
 	jQuery('#add-text').click(function() {
+		// jQuery("textarea#text").val('');
 		var text = jQuery("textarea#text").val();
-		var color = jQuery("textarea#text").css('color');
+
+		if(!text)
+		{
+			console.log('empty!');
+			$('#text').focus();
+			$('#text').animate({borderColor:'#f00'},200, function(){
+				$(this).animate({borderColor:'#aaa'},200);
+			});
+			return false;
+		}
+
+		var color = $('#color-selector').data('color');
 		var font = jQuery("#font").val();
 		var font_s = jQuery('#text-font-size').val();
 		var align = jQuery("#align").val();
@@ -118,13 +132,24 @@
 	    	canvas.setHeight(textSample.height);
 	    	textSample.top = Math.ceil(textSample.height / 2);
 	    	jQuery('#c_height').val(Math.ceil(textSample.top));
+
+	    	if($('#c_height').val() < 960)
+				  			$('.line.bottom').hide();
+				  		else
+				  			$('.line.bottom').show();
 	    }
 
-	    console.log(canvas.getHeight());
+	    // console.log(canvas.getHeight());
+
+	    if(canvas.getHeight()<$('.fancybox-inner').scrollTop()+15)
+	    	textSample.top = canvas.getHeight()-textSample.height;
+	    else
+	    	textSample.top = $('.fancybox-inner').scrollTop()+textSample.height/2;
 
 	    canvas.add(textSample);
 	    canvas.renderAll();
 	    jQuery('#c_width').keyup();
+	    canvas.setActiveObject(textSample);
 	    //updateComplexity();
  	});
 
@@ -133,13 +158,33 @@
 		var activeObject = canvas.getActiveObject();
 		
 		activeObject.set('left', width_canvas/2  );
-		
-			
-			// console.log(activeObject.text);
-			// console.log(activeObject.getText());
 			canvas.renderAll();
-		
 	});
+
+	jQuery('#to-right').click(function() {
+		var width_canvas = jQuery('#c_width').val();
+		var activeObject = canvas.getActiveObject();
+		var K = 4;
+		if (activeObject && activeObject.type === 'text') {
+			K = 2;
+		}
+		
+		activeObject.set('left', width_canvas-(activeObject.width/K)  );
+			canvas.renderAll();
+	});
+	jQuery('#to-left').click(function() {
+		// var width_canvas = jQuery('#c_width').val();
+		var activeObject = canvas.getActiveObject();
+		var K = 4;
+		if (activeObject && activeObject.type === 'text') {
+			K = 2;
+		}
+		
+		activeObject.set('left', 0 + (activeObject.width/K) );
+			canvas.renderAll();
+	});
+
+
 
 	jQuery('#refresh-text').click(function() {
 		var width_canvas = jQuery('#c_width').val();
@@ -164,6 +209,11 @@
 		   		canvas.setHeight(tmp.height);
 		    	tmp.top = Math.ceil(tmp.height / 2);
 		    	jQuery('#c_height').val(Math.ceil(tmp.height));
+
+		    	if($('#c_height').val() < 960)
+				  			$('.line.bottom').hide();
+				  		else
+				  			$('.line.bottom').show();
 		    }
 
 			canvas.add(tmp);
@@ -190,6 +240,13 @@
  				break;
  			}
  		}
+
+ 		if($('#c_height').val() < 960)
+  			$('.line.bottom').hide();
+  		else
+  			$('.line.bottom').show();
+
+
 	    canvas.renderAll();
  	});
 
@@ -242,6 +299,7 @@
 		},
 		onChange: function (hsb, hex, rgb) {
 			jQuery('#color-selector div').css('backgroundColor', '#' + hex);
+			jQuery('#color-selector').data('color', '#' + hex);
 			//jQuery('#text').css('color', '#' + hex);
 			var activeObject = canvas.getActiveObject();
 			if (activeObject && activeObject.type === 'text') {
@@ -290,16 +348,40 @@
 
 	//Обрабатываем событие клика на текстоый объект
 	canvas.on('object:selected', onObjectSelected);
+	canvas.on('selection:cleared', onObjectDeselected);
+
+	function onObjectDeselected(e){
+		var selectedObject = e.target;
+		var color = "#000000";
+		$('#color-selector').data('color', color);
+	      $('#color-selector div').css('background-color', color);
+	      $('#text').val('');
+	      
+	      	$('output').fadeOut(250);
+	      
+	}
 
 	function onObjectSelected(e){
 		var selectedObject = e.target;
 
 		if (selectedObject.type === 'text') {
+			// $('.font-control').show();
 	      $('textarea#text').val(selectedObject.getText());
 	      textFontSizeField.val(selectedObject.get('fontSize'));
+	      // console.log(selectedObject.fill);
+	      $('#color-selector').data('color', selectedObject.fill);
+	      $('#color-selector div').css('background-color', selectedObject.fill);
+
+	      // $('#c_height').focus();
+	      setTimeout(function() { $('#text').focus() }, 200);
 	    }
 	}
 
+	$('#text').focus(function(){
+		console.log('focused!');
+		$('output').fadeIn(250);
+	});
+	
 	/// Подгоняем текст под ширину и высоту
 	/// t:fabric.IText, canvas:HTMLCanvas, maxW:number, maxH:number
 	///
@@ -386,7 +468,42 @@
 	
 	jQuery('#canvas').data('canvas', canvas);
 })(this);
-
+// DOM Ready
+$(function() {
+ var el, newPoint, newPlace, offset;
+ 
+ // Select all range inputs, watch for change
+ $("input[type='range']").change(function() {
+ 
+   // Cache this for efficiency
+   el = $(this);
+   
+   // Measure width of range input
+   width = el.width();
+   
+   // Figure out placement percentage between left and right of input
+   newPoint = (el.val() - el.attr("min")) / (el.attr("max") - el.attr("min"));
+   
+   // Janky value to get pointer to line up better
+   offset = -1.3;
+   
+   // Prevent bubble from going beyond left or right (unsupported browsers)
+   if (newPoint < 0) { newPlace = 0; }
+   else if (newPoint > 1) { newPlace = width; }
+   else { newPlace = width * newPoint + offset; offset -= newPoint; }
+   
+   // Move bubble
+   el
+     .next("output")
+     .css({
+       left: newPlace,
+       marginLeft: offset + "%"
+     })
+     .text(el.val());
+ })
+ // Fake a change to position bubble at page load
+ .trigger('change');
+});
 /*align
 
 var textAlignSwitch = document.getElementById('text-align');

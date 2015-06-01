@@ -174,7 +174,10 @@
 
 		if($('#image_id').val())
 		{
-			K = 4;
+			if($('#json_canvas').val())
+				K = 2;
+			else
+				K = 4;
 			if (activeObject && activeObject.type === 'text') {
 				K = 2;
 			}
@@ -190,7 +193,11 @@
 
 		if($('#image_id').val())
 		{
-			K = 4;
+			if($('#json_canvas').val())
+				K = 2;
+			else
+				K = 4;
+
 			if (activeObject && activeObject.type === 'text') {
 				K = 2;
 			}

@@ -58,8 +58,14 @@
 	if (textFontSizeField) {
 		textFontSizeField.change(function() {
 			var activeObject = canvas.getActiveObject();
+			// console.log('ds');
 			if (activeObject && activeObject.type === 'text') {
+				console.log(activeObject.top);
+				var old_heieght = activeObject.height;
 				activeObject.setFontSize(parseInt(this.value, 10));
+				var new_height = activeObject.height;
+
+				activeObject.top += parseInt((new_height - old_heieght)/2);
 				canvas.renderAll();
 			}
 		});
@@ -164,9 +170,14 @@
 	jQuery('#to-right').click(function() {
 		var width_canvas = jQuery('#c_width').val();
 		var activeObject = canvas.getActiveObject();
-		var K = 4;
-		if (activeObject && activeObject.type === 'text') {
-			K = 2;
+		var K = 2;
+
+		if($('#image_id').val())
+		{
+			K = 4;
+			if (activeObject && activeObject.type === 'text') {
+				K = 2;
+			}
 		}
 		
 		activeObject.set('left', width_canvas-(activeObject.width/K)  );
@@ -175,10 +186,16 @@
 	jQuery('#to-left').click(function() {
 		// var width_canvas = jQuery('#c_width').val();
 		var activeObject = canvas.getActiveObject();
-		var K = 4;
-		if (activeObject && activeObject.type === 'text') {
-			K = 2;
+		var K = 2;
+
+		if($('#image_id').val())
+		{
+			K = 4;
+			if (activeObject && activeObject.type === 'text') {
+				K = 2;
+			}
 		}
+		
 		
 		activeObject.set('left', 0 + (activeObject.width/K) );
 			canvas.renderAll();
@@ -190,7 +207,9 @@
 		var width_canvas = jQuery('#c_width').val();
 		var activeObject = canvas.getActiveObject();
 		var font_s = jQuery('#text-font-size').val();
-
+		var old_top = activeObject.top;
+		var old_height = activeObject.height;
+		console.log("oldtop : "+old_top);
 		if (activeObject && activeObject.type === 'text') {
 			activeObject.setText(activeObject.text.replace(/(\r\n|\n|\r)/gm, ""));	
 			var tmp = wrapCanvasText(activeObject, canvas, width_canvas);
@@ -199,6 +218,7 @@
 			if(tmp.height > 32766){ //fucking stop
 				tmp = wrapCanvasText(activeObject, canvas, width_canvas, 32766);
 			}
+
 			//console.log(activeObject.text);
 			//someText = someText.replace(/(\r\n|\n|\r)/gm," ");
 			//newText.setFontSize(font_s);
@@ -207,7 +227,7 @@
 			//Check size Height text and canvas
 		    if(canvas.getHeight() < tmp.height){
 		   		canvas.setHeight(tmp.height);
-		    	tmp.top = Math.ceil(tmp.height / 2);
+		    	
 		    	jQuery('#c_height').val(Math.ceil(tmp.height));
 
 		    	if($('#c_height').val() < 960)
@@ -215,11 +235,14 @@
 				  		else
 				  			$('.line.bottom').show();
 		    }
-
+		    tmp.top = old_top;
 			canvas.add(tmp);
+
+
 			// console.log(activeObject.text);
 			// console.log(activeObject.getText());
 			canvas.renderAll();
+			canvas.setActiveObject(tmp);
 		}
 	});
 

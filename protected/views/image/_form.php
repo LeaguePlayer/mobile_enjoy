@@ -128,7 +128,7 @@
 		               'onComplete'=>"js:function(id, fileName, responseJSON){
 		               		var c = jQuery('#canvas').data('canvas');
 		               		fabric.Image.fromURL('/uploads/tmp/' + fileName, function(img) {
-								img.set('left', 100).set('top', 100);
+								img.set('left', (img.width/4)).set('top', img.height/4);
 								img.set('width',img.width/2);
 								img.set('height',img.height/2);
 								c.add(img);
@@ -407,12 +407,15 @@
 		$('.fancybox-overlay').addClass('blur');
 		$('.bg').show();
 
-		setTimeout(w8forPreview(preview_iphone, image, device), 1000);
+		setTimeout(function(){
+			w8forPreview(preview_iphone, image, device);
+		}, 3500);
 		
 	});
 
 	function w8forPreview(preview_iphone, image, device)
 	{
+		console.log('time is out');
 		$.ajax({
 		  type: "POST",
 		  url: '/image/previewImage/',

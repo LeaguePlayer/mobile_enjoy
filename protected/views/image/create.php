@@ -9,7 +9,9 @@ $this->menu=array(
 	//array('label'=>'Конструктор', 'url'=>'#builder', 'itemOptions' => array('class' => 'fancybox')),
 );
 ?>
-<div class="bg"></div>
+<div class="bg">
+	<div class="detail">Загрузка <span class="now">1</span> из <span class="full">2</span>...</div>
+</div>
 <div id="preview_iphone">
 	<div class="switch_device">
 		<ul>
@@ -22,7 +24,10 @@ $this->menu=array(
 	</div>
 	<div class="device iphone6plus">
 		<div class="screen">
-			<div class="scroll"><img src=""></div>
+			<div class="scroll">
+			<div class="loading_status">Загрузка <span class="now">1</span> из <span class="full">2</span>...</div>
+				<img src="">
+			</div>
 		</div>
 	</div>
 	

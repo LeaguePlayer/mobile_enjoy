@@ -29,7 +29,7 @@ class ImageController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('delete', 'view', 'PreviewImage', 'create', 'setsort', 'builder', 'getImage', 'createTemplate', 'getTemplate', 'deleteTemplate', 'update'),
+				'actions'=>array('delete', 'view', 'PreviewImage', 'gotPreviewImage', 'create', 'setsort', 'builder', 'getImage', 'createTemplate', 'getTemplate', 'deleteTemplate', 'update'),
 				'users'=>array('admin'),
 			),
 			array('deny',  // deny all users
@@ -130,14 +130,20 @@ class ImageController extends Controller
 	}
 
 	public function actionBuilder($id_image = false){
+		$id_unique = $_POST['Image']['id_unique'];
+		// $id_unique = 'e8a80483-024c-c5e6-ed75-3cb761f66c68';
+		$modelPreview = Previews::model()->find("id_unique = :id_unique" , array(':id_unique' =>$id_unique));
+		// var_dump($modelPreview->fullImage);die();
+		// die();
 		$model = (is_numeric($id_image)) ? Image::model()->findByPk($id_image) : new Image;
+// $model->block_id = 2;
 
 		if(isset($_POST['Image']))
 		{
 			$model->attributes=$_POST['Image'];
 
-			if(!empty($_POST['Image']['filename'])){
-				$img = $_POST['Image']['filename'];
+			if(!empty( $modelPreview->fullImage )){
+				$img = $modelPreview->fullImage;
 				$img = str_replace('data:image/png;base64,', '', $img);
 				$img = str_replace(' ', '+', $img);
 				$data = base64_decode($img);
@@ -150,19 +156,25 @@ class ImageController extends Controller
 
 				$rand = rand(0,99999);
 				$file = $folder_block.'create'.$rand.'.png';
-				// echo $file;die();
+				// echo $file;//die();
+// var_dump(file_put_contents($file, $data));die();
 				if(file_put_contents($file, $data)){
+					// var_dump($model->block_id);
 					$model->filename = $this->createBuildImage($file, 'png', $model->block_id);
 				}
+
+// var_dump($model->block_id);die();
 				//delete tmp files
 				$files = glob($folder.'*'); // get all file names
 				foreach($files as $file){ // iterate files
 				  // if(is_file($file))
 				    // unlink($file); // delete file
 				}
+
 			}
 
 			$model->sort = 1000;
+
 			if($model->save()){
 				echo 'ok';
 			}
@@ -259,13 +271,122 @@ class ImageController extends Controller
 		return '';
 	}
 
+	public function actionGotPreviewImage()
+	{
+		
+		$device = $_POST['device'];
+		$id_unique = $_POST['id_unique'];
+		$base64img = $_POST['image_base64'];
+		$index = $_POST['index'];
+		$last = ($_POST['last']=='true') ? true : false;
+
+
+
+		$model = Previews::model()->find("id_unique = :id_unique" , array(':id_unique' =>$id_unique));
+		if(empty($model)) $model = new Previews;
+
+
+
+		$model->id_unique = $id_unique;
+		$model->create_date = date("Y-m-d H:i:s");
+
+		$ar = array();
+		$ar = unserialize($model->data_image);
+		$ar[$index] = $base64img;
+		$model->data_image = serialize($ar);
+
+		// $model = Previews::model()->find("id_unique = :id_unique" , array(':id_unique' =>"abcd"));
+		// die();
+		if($model->save() && $last)
+		// if(1==1)
+		{
+// echo $model->fullImage;
+// 			return true;
+			$uploadsDir =  YiiBase::getPathOfAlias('webroot').$this->uploadsDirName.'previews';
+			if(!is_dir($uploadsDir)) @mkdir($uploadsDir);
+
+			
+			
+			
+
+			$base64img = str_replace("data:image/png;base64,", '', $model->fullImage);
+			$data = base64_decode($base64img);
+
+			
+			
+	        // $model->data_image = "";
+	        // $model->update();
+	       
+	       
+
+	        $file = $uploadsDir . '/preview.png';//. $format[1];
+
+	        file_put_contents($file, $data);
+// var_dump($file);die();
+
+	        
+
+	        $thumb = Yii::app()->phpThumb->create($file);
+
+	        $size = getimagesize($file);
+
+				// SiteHelper::mpr($size);die();
+
+				$iPhone6PlusWidth = $size[0];
+				$iPhone6PlusHeight = $size[1];
+	$height = false;
+				switch ($device) {
+					case 'iphone4s':
+							// $height = round($iPhone6PlusHeight/4/1.32596685);
+							$width = round(320/1.33334);
+						break;
+
+					case 'iphone5s':
+							// $height = round($iPhone6PlusHeight/2/2.36453202);
+							$width = round(640/2.60162602);
+							
+						break;
+
+					case 'iphone6':
+							// $height = round($iPhone6PlusHeight/1.43928036/2.875);
+							$width = round(750/2.87356322);
+						break;
+
+					case 'iphone6plus':
+							// $height = round($iPhone6PlusHeight/3.54898336);
+							$width = 307;
+						break;
+					
+					default:
+							die();
+						break;
+				}
+
+
+				
+			// echo $width;die();
+	        $thumb->adaptiveResize($width, $height)->save($file);
+	        
+			
+			// $data = file_get_contents($file);
+
+			$path = $file;
+			$type = pathinfo($path, PATHINFO_EXTENSION);
+			$data = file_get_contents($path);
+			echo 'data:image/' . $type . ';base64,' . base64_encode($data);
+
+		}
+	}
+
 	public function actionPreviewImage()
 	{
+		$id_unique = $_POST['id_unique'];
+		$model = Previews::model()->find("id_unique = :id_unique" , array(':id_unique' =>$id_unique));
 		// SiteHelper::mpr($_POST);die();
 		$uploadsDir =  YiiBase::getPathOfAlias('webroot').$this->uploadsDirName.'previews';
 		if(!is_dir($uploadsDir)) @mkdir($uploadsDir);
 
-		$base64img = $_POST['image_base64'];
+		$base64img = $model->fullImage;
 		$device = $_POST['device'];
 		
 
@@ -290,26 +411,26 @@ class ImageController extends Controller
 
 			$iPhone6PlusWidth = $size[0];
 			$iPhone6PlusHeight = $size[1];
-
+$height = false;
 			switch ($device) {
 				case 'iphone4s':
-						$height = round($iPhone6PlusHeight/4/1.32596685);
+						// $height = round($iPhone6PlusHeight/4/1.32596685);
 						$width = round(320/1.33334);
 					break;
 
 				case 'iphone5s':
-						$height = round($iPhone6PlusHeight/2/2.36453202);
+						// $height = round($iPhone6PlusHeight/2/2.36453202);
 						$width = round(640/2.60162602);
 						
 					break;
 
 				case 'iphone6':
-						$height = round($iPhone6PlusHeight/1.43928036/2.875);
+						// $height = round($iPhone6PlusHeight/1.43928036/2.875);
 						$width = round(750/2.87356322);
 					break;
 
 				case 'iphone6plus':
-						$height = round($iPhone6PlusHeight/3.54898336);
+						// $height = round($iPhone6PlusHeight/3.54898336);
 						$width = 307;
 					break;
 				
@@ -340,9 +461,12 @@ class ImageController extends Controller
 		
 	}
 
+
+
 	//Save image
 	private function createBuildImage($file, $extension, $block){
 		if($file){
+
 			$uploadsDir =  YiiBase::getPathOfAlias('webroot').$this->uploadsDirName;
 			if(!is_dir($uploadsDir)) @mkdir($uploadsDir);
 
@@ -364,12 +488,22 @@ class ImageController extends Controller
 			$thumbDir = $blockDir.'thumbs/';
 			if(!is_dir($thumbDir)) @mkdir($thumbDir);
 
-			$thumb = Yii::app()->phpThumb->create($file);
-			$thumbDef = Yii::app()->phpThumb->create($file);
-			$thumbRetina = Yii::app()->phpThumb->create($file);
-			$thumbiPhone5s = Yii::app()->phpThumb->create($file);
-			$thumbiPhone6 = Yii::app()->phpThumb->create($file);
-			$thumbiPhone6plus = Yii::app()->phpThumb->create($file);
+			$cs = Yii::app()->phpThumb;
+			$thumb = $cs->create($file);
+			// $thumb2 = copy $thumb;
+			// var_dump($thumb2);die();
+			// $thumb2 = $cs->create($file);
+			// $th = new EThumbnail($file);
+			// $th2 = new EThumbnail($file);
+			// $th->options = array();
+			// $thumb2 = $th->create($file);
+
+
+			// $thumbDef = Yii::app()->phpThumb->create($file);
+			// $thumbRetina = Yii::app()->phpThumb->create($file);
+			// $thumbiPhone5s = Yii::app()->phpThumb->create($file);
+			// $thumbiPhone6 = Yii::app()->phpThumb->create($file);
+			// $thumbiPhone6plus = Yii::app()->phpThumb->create($file);
 
 			$fileName = md5(mktime()).".".$extension;
 
@@ -380,20 +514,32 @@ class ImageController extends Controller
 			$iPhone6PlusWidth = $size[0];
 			$iPhone6PlusHeight = $size[1];
 
-			// $defW = floor($size[0]/2);
-			$defH = floor($iPhone6PlusHeight/4);
-			$retinaH = floor($iPhone6PlusHeight/2);
-			$iphone6H = round($iPhone6PlusHeight/1.43928036);
-			$iphone5H = round($iPhone6PlusHeight/1.69014085);
+			// var_dump(expression)
+			// $defH = floor($iPhone6PlusHeight/4);
+			// $retinaH = floor($iPhone6PlusHeight/2);
+			// $iphone6H = round($iPhone6PlusHeight/1.43928036);
+			// $iphone5H = round($iPhone6PlusHeight/1.69014085);
+			$defH = false;
+			$retinaH = false;
+			$iphone6H = false;
+			$iphone5H = false;
 
+			$thumb->save($iphone6plusDir.$fileName);
+			$thumb->adaptiveResize(750, $iphone6H)->save($iphone6Dir.$fileName);
+			$thumb->adaptiveResize(640, $iphone5H)->save($iphone5sDir.$fileName);
+			$thumb->adaptiveResize(640, $retinaH)->save($retinaDir.$fileName);
+			$thumb->adaptiveResize(320, $defH)->save($blockDir.$fileName);
 			$thumb->adaptiveResize(100, 100)->save($thumbDir.$fileName);
-			$thumbDef->adaptiveResize(320, $defH)->save($blockDir.$fileName);
-			$thumbiPhone5s->adaptiveResize(640, $iphone5H)->save($iphone5sDir.$fileName);
-			$thumbiPhone6->adaptiveResize(750, $iphone6H)->save($iphone6Dir.$fileName);
-			$thumbRetina->adaptiveResize(640, $retinaH)->save($retinaDir.$fileName);
+			
+			// $thumb2 = $cs->create($file);
 
-			$thumbiPhone6plus->resize($iPhone6PlusWidth, $iPhone6PlusHeight)->save($iphone6plusDir.$fileName);
+			
+			
+			
 
+			
+// var_dump($thumb);die();
+			// var_dump($fileName);
 			return $fileName;
 		}
 		return '';

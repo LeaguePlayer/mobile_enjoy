@@ -35,8 +35,8 @@
 </div>
 <div id="builder">
 	<div id="canvas-container" style="min-height: 100px;">
-	<div class="line top"></div>
-	<div class="line bottom"></div>
+	<!-- <div class="line top"></div>
+	<div class="line bottom"></div> -->
 		<canvas id="canvas" width="540" height="960"></canvas>
 	</div>
 	<div id="settings">
@@ -109,11 +109,16 @@
 			<div class="clear"></div>
 		</div>
 		<div class="block">
-			Выравнять:
+			Выравнять по горизонтали:
 			<div class="clear"></div>
 				<?php echo CHtml::button('По левому краю', array('id' => 'to-left'));?>
 				<?php echo CHtml::button('По центру', array('id' => 'to-center'));?>
 				<?php echo CHtml::button('По правому краю', array('id' => 'to-right'));?>
+			Выравнять по вертикали:
+			<div class="clear"></div>
+				<?php echo CHtml::button('По вверху', array('id' => 'vertical-to-top'));?>
+				<?php echo CHtml::button('По центру', array('id' => 'vertical-to-center'));?>
+				<?php echo CHtml::button('По низу', array('id' => 'vertical-to-bottom'));?>
 			
 			
 		</div>
@@ -319,7 +324,21 @@
 			$('#preview_iphone .device').addClass($this.data('device'));
 			$this.addClass('active');
 			$('#preview_iphone .device').find('img').hide();
-			$('#preview').click();
+			// $('#preview').click();
+			$.ajax({
+				  type: "POST",
+				  url: '/image/previewImage/',
+				  data: {'id_unique': window.id_unique, 'device': $this.data('device')},
+				  // dataType: 'json',
+				  success: function(data){
+				  	// console.log();
+				  	// resizeAllObjectsToSmallWithCanvas();
+					  	$('#preview_iphone .device').find('img').attr('src',data);
+						
+						
+						$('#preview_iphone .device').find('img').show();
+				  },
+				});
 			
 		}
 		return false;
@@ -394,32 +413,148 @@
 		
 	}
 
+	var id_unique = "";
+
+	function guid() {
+	  function s4() {
+	    return Math.floor((1 + Math.random()) * 0x10000)
+	      .toString(16)
+	      .substring(1);
+	  }
+	  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+	    s4() + '-' + s4() + s4() + s4();
+	}
 
 	jQuery('#preview').on('click', function(){
+		window.id_unique = guid();
+		// console.log(window.id_unique);
+		// var del = 3;
+		// var a = "hello barz";
+		// var ceil = Math.ceil(a.length/del);
+		// console.log(a.length);
+		// console.log(ceil);
+		// for(i = 0; i <ceil; i++)
+		// {
+		// 	result = a.substring(del*i,del*(i+1));
+		// 			console.log(result);
+		// }
+		var preview_iphone = $('#preview_iphone');
+					var device = $('.switch_device ul li a.active').data('device');
+		var del = 12000;
+		var result = "";
+		var result_last =false;
 		var c = $('#canvas').data('canvas');
 		c.deactivateAll();
 		var parent = $(this).closest('#builder');
-		var preview_iphone = $('#preview_iphone');
+		
 		resizeAllObjectsToBig();
 		var image = c.toDataURL();
-		var device = $('.switch_device ul li a.active').data('device');
+		
 		preview_iphone.show();
 		$('.fancybox-overlay').addClass('blur');
 		$('.bg').show();
+		var ceil = Math.ceil(image.length/del);
+
+		preview_iphone.find('.loading_status .full').text(ceil);
+		preview_iphone.find('.loading_status .now').text('0');
 
 		setTimeout(function(){
-			w8forPreview(preview_iphone, image, device);
-		}, 3500);
+			
+			
+			
+			
+			console.log(image.length);
+			console.log(ceil);
+			var ind = 0;
+			for(ind = 0; ind <ceil; ind++)
+			{
+				// result_last = 
+				
+				result_last = ((ceil-1) == ind) ? true : false;
+				// console.log();
+				setTimeout(helloFix(ind, image, del, result_last, device),1250);
+			}
+			// 
+		}, 2500);
 		
 	});
 
-	function w8forPreview(preview_iphone, image, device)
+	function helloFix(index, image, del, result_last, device){
+					var preview_iphone = $('#preview_iphone');
+					var device = $('.switch_device ul li a.active').data('device');
+					result = image.substring(del*index,del*(index+1));
+
+					// console.log(result);
+					$.ajax({
+						  type: "POST",
+						  url: '/image/gotPreviewImage/',
+						  data: {'image_base64': result, 'id_unique': window.id_unique, 'last': result_last, 'index': index,  'device': device},
+						  // dataType: 'json',
+						  error: function(xhr, status, error){
+						  	alert('Ошибка, попробуем еще раз!');
+						  	$('#preview').click();
+						  },
+						  success: function(data){
+						  	console.log(data);
+						  	preview_iphone.find('.loading_status .now').text(index+1);
+						  	if(result_last)
+						  	{
+						  		w8forPreview(preview_iphone, device);
+						  	}
+						  },
+						});
+				}
+
+				function helloFixUpload(index, image, del, result_last, block_id, json, url){
+					var preview_iphone = $('#preview_iphone');
+					var device = $('.switch_device ul li a.active').data('device');
+					result = image.substring(del*index,del*(index+1));
+
+					// console.log(result);
+					$.ajax({
+						  type: "POST",
+						  url: '/image/gotPreviewImage/',
+						  data: {'image_base64': result, 'id_unique': window.id_unique, 'last': result_last, 'index': index,  'device': device},
+						  // dataType: 'json',
+						  error: function(xhr, status, error){
+						  	alert('Ошибка!');
+						  	// $('#preview').click();
+						  },
+						  success: function(data){
+						  	console.log(data);
+						  	$('.bg').find('.detail .now').text(index+1);
+						  	if(result_last)
+						  	{
+						  		$.ajax({
+										  type: "POST",
+										  url: url,
+										  data: {Image:{block_id: block_id, json_canvas: json, id_unique: window.id_unique}},
+										  // dataType: 'json',
+										  error: function(xhr, status, error){
+										  	alert('Ошибка!');
+										  	console.log(xhr);
+										  	console.log(status);
+										  	console.log(error);
+										  	$('#save-builder').click();
+										  },
+										  success: function(data){
+										  	if(data == 'ok'){
+												document.location = "<?=Yii::app()->createUrl('block')?>/" + block_id;
+											}
+										  },
+										});
+						  	}
+						  },
+						});
+				}
+
+	function w8forPreview(preview_iphone, device)
 	{
 		console.log('time is out');
 		$.ajax({
 		  type: "POST",
 		  url: '/image/previewImage/',
-		  data: {'image_base64': image, 'device': device},
+		  data: {'id_unique': window.id_unique, 'device': device},
 		  // dataType: 'json',
 		  success: function(data){
 		  	// console.log();
@@ -462,17 +597,55 @@
 		var json = JSON.stringify( c.toJSON() );
 		var image_id = $('#image_id').val();
 		var url = (image_id > 0) ? '/image/builder/id_image/'+image_id : '/image/builder';
-		$.post(url,{Image:{block_id: block_id, filename: image, json_canvas: json}}, function(data){
-			if(data == 'ok'){
-				document.location = "<?=Yii::app()->createUrl('block')?>/" + block_id;
+
+
+		var del = 12000;
+		var result = "";
+		var result_last =false;
+		
+		
+		
+		
+		
+		
+		// preview_iphone.show();
+		// $('.fancybox-overlay').addClass('blur');
+		// $('.bg').show();
+		var ceil = Math.ceil(image.length/del);
+		$('.bg').find('.detail .full').text(ceil);
+		// preview_iphone.find('.loading_status .full').text(ceil);
+		// preview_iphone.find('.loading_status .now').text('0');
+
+		setTimeout(function(){
+			
+			
+			
+			
+			console.log(image.length);
+			console.log(ceil);
+			var ind = 0;
+			for(ind = 0; ind <ceil; ind++)
+			{
+				// result_last = 
+				
+				result_last = ((ceil-1) == ind) ? true : false;
+				// console.log();
+				setTimeout(helloFixUpload(ind, image, del, result_last, block_id, json, url),1250);
 			}
-			//document.location.reload(true);
-		});
+			// 
+		}, 2500);
+
+
+
+		
+
+
 	});
 
 
 
 	$(document).ready(function(){
+		window.id_unique = guid();
 		$('#color-selector div').css('background-color', $('#color-selector').data('color'));
 
 		var json_canvas = $('#json_canvas').val();

@@ -167,6 +167,30 @@
 			canvas.renderAll();
 	});
 
+	jQuery('#vertical-to-center').click(function() {
+		var height_canvas = canvas.height;
+		var activeObject = canvas.getActiveObject();
+		
+		activeObject.set('top', (height_canvas/2)  );
+			canvas.renderAll();
+	});
+
+	jQuery('#vertical-to-top').click(function() {
+		var height_canvas = canvas.height;
+		var activeObject = canvas.getActiveObject();
+		
+		activeObject.set('top', 0+(activeObject.height/2)  );
+			canvas.renderAll();
+	});
+
+	jQuery('#vertical-to-bottom').click(function() {
+		var height_canvas = canvas.height;
+		var activeObject = canvas.getActiveObject();
+		
+		activeObject.set('top', height_canvas-(activeObject.height/2)  );
+			canvas.renderAll();
+	});
+
 	jQuery('#to-right').click(function() {
 		var width_canvas = jQuery('#c_width').val();
 		var activeObject = canvas.getActiveObject();

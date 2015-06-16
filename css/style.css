@@ -157,6 +157,37 @@ a.builder{
 	top:0;
 	left:0;
 }
+.bg .detail
+{
+	display: none;
+	position: absolute;
+	top:40%;
+	text-align: center;
+	font-size:18px;
+	color:#fff;
+	font-weight: 300;
+	margin-top:10px;
+	/*text-indent: -8px;*/
+	position: absolute;
+	z-index:1;
+	width: 100%;
+}
+.bg.loader .detail
+{
+	display: block;
+}
+.loading_status
+{
+	text-align: center;
+	font-size:18px;
+	color:#fff;
+	font-weight: 300;
+	margin-top:10px;
+	text-indent: -8px;
+	position: absolute;
+	z-index:1;
+	width: 100%;
+}
 #preview_iphone .switch_device
 {
 	background-color: #fff;
@@ -216,6 +247,8 @@ a.builder{
 #preview_iphone .device .screen img
 {
 	display: none;
+	position: relative;
+	z-index: 2;
 }
 #preview_iphone .device .screen
 {

@@ -221,11 +221,9 @@
 				  			$('.line.bottom').hide();
 				  		else
 				  			$('.line.bottom').show();
-
 			c.renderAll();
 		}
 	});
-
 	jQuery('.fancybox').fancybox({
 		width: 1000,
 		type: 'inline',
@@ -253,14 +251,12 @@
 			
 		}
 	});
-
 	jQuery('#template').on('click', function(){
 		if($(this).is(':checked'))
 			$(this).parent().find('.template_name').fadeIn();
 		else
 			$(this).parent().find('.template_name').fadeOut();
 	});
-
 	jQuery('#del-template').on('click', function(){
 		var template_id = $('#template-del').find('option:selected').val();
 		var name = $('#template-del').find('option:selected').text();
@@ -284,7 +280,6 @@
 			});
 		}
 	});
-
 	jQuery('#template-check').change(function(){
 		var template_id = $(this).find('option:selected').val();
 		var c = $('#canvas').data('canvas');
@@ -301,15 +296,12 @@
 					c.loadFromDatalessJSON(data);
 					c.renderAll();
 				}
-
 			});
 		}
 	});
-
 	$(document).on('click','.switch_device ul li a',function(){
 		$lastActive = $('.switch_device ul li a.active');
 		$this = $(this);
-
 		if($this.data('device') == 'close')
 		{
 				$('#preview_iphone').hide();
@@ -343,7 +335,6 @@
 		}
 		return false;
 	});
-
 	function resizeAllObjectsToBig()
 	{
 		var canvas = $('#canvas').data('canvas');
@@ -353,24 +344,20 @@
 		    var scaleY = objects[i].scaleY;
 		    var left = objects[i].left;
 		    var top = objects[i].top;
-
 		    var tempScaleX = scaleX * 2;
 		    var tempScaleY = scaleY * 2;
 		    var tempLeft = left * 2;
 		    var tempTop = top * 2;
-
 		    objects[i].scaleX = tempScaleX;
 		    objects[i].scaleY = tempScaleY;
 		    objects[i].left = tempLeft;
 		    objects[i].top = tempTop;
-
 		    objects[i].setCoords();
 		}
 		canvas.setHeight( canvas.height*2 );
 		canvas.setWidth( canvas.width*2 );
 		// canvas.renderAll();
 	}
-
 	function resizeAllObjectsToSmallWithOutCanvas()
 	{
 		var canvas = $('#canvas').data('canvas');
@@ -380,41 +367,33 @@
 		    var scaleY = objects[i].scaleY;
 		    var left = objects[i].left;
 		    var top = objects[i].top;
-
 		    var tempScaleX = scaleX / 2;
 		    var tempScaleY = scaleY / 2;
 		    var tempLeft = left / 2;
 		    var tempTop = top / 2;
-
 		    objects[i].scaleX = tempScaleX;
 		    objects[i].scaleY = tempScaleY;
 		    objects[i].left = tempLeft;
 		    objects[i].top = tempTop;
-
 		    objects[i].setCoords();
 		}
 		
 		canvas.renderAll();
 	}
-
 	function resizeAllObjectsToSmallWithCanvas()
 	{
 		resizeAllObjectsToSmallWithOutCanvas();
 		canvas.setHeight( canvas.height/2 );
 		canvas.setWidth( canvas.width/2 );
 	}
-
 	function loadForUpdateImage()
 	{
 		resizeAllObjectsToSmallWithOutCanvas();
 		$('.fancybox-overlay').removeClass('blur');
 		$('.bg').removeClass('loader').hide();
-
 		
 	}
-
 	var id_unique = "";
-
 	function guid() {
 	  function s4() {
 	    return Math.floor((1 + Math.random()) * 0x10000)
@@ -424,7 +403,7 @@
 	  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
 	    s4() + '-' + s4() + s4() + s4();
 	}
-
+	
 	jQuery('#preview').on('click', function(){
 		window.id_unique = guid();
 		// console.log(window.id_unique);
@@ -439,7 +418,7 @@
 		// 			console.log(result);
 		// }
 		var preview_iphone = $('#preview_iphone');
-					var device = $('.switch_device ul li a.active').data('device');
+		var device = $('.switch_device ul li a.active').data('device');
 		var del = 12000;
 		var result = "";
 		var result_last =false;
@@ -454,64 +433,62 @@
 		$('.fancybox-overlay').addClass('blur');
 		$('.bg').show();
 		var ceil = Math.ceil(image.length/del);
-
 		preview_iphone.find('.loading_status .full').text(ceil);
 		preview_iphone.find('.loading_status .now').text('0');
-
-		setTimeout(function(){
 			
-			
-			
-			
-			console.log(image.length);
-			console.log(ceil);
 			var ind = 0;
+			var dfd=$.Deferred();
+			
+			var methods=[];
+			var params=[];
 			for(ind = 0; ind <ceil; ind++)
 			{
-				// result_last = 
-				
 				result_last = ((ceil-1) == ind) ? true : false;
-				// console.log();
-				setTimeout(helloFix(ind, image, del, result_last, device),1250);
+				params.push([ind, image, del, result_last, device]);
+				methods.push(function(params){
+					helloFix.apply(this,params);
+				});
 			}
-			// 
-		}, 2500);
+		
+		$('#preview').data('methods',methods);
+		$('#preview').data('params',params);
+
+		methods[0].apply(this,[params[0]]);
 		
 	});
-
 	function helloFix(index, image, del, result_last, device){
 					var preview_iphone = $('#preview_iphone');
 					var device = $('.switch_device ul li a.active').data('device');
 					result = image.substring(del*index,del*(index+1));
-
-					// console.log(result);
-					$.ajax({
+					var methods=$('#preview').data('methods');
+					var params=$('#preview').data('params');
+					return $.ajax({
 						  type: "POST",
 						  url: '/image/gotPreviewImage/',
 						  data: {'image_base64': result, 'id_unique': window.id_unique, 'last': result_last, 'index': index,  'device': device},
 						  // dataType: 'json',
 						  error: function(xhr, status, error){
 						  	alert('Ошибка, попробуем еще раз!');
-						  	$('#preview').click();
 						  },
 						  success: function(data){
-						  	console.log(data);
 						  	preview_iphone.find('.loading_status .now').text(index+1);
 						  	if(result_last)
 						  	{
 						  		w8forPreview(preview_iphone, device);
-						  	}
+						  		methods=[];
+						  		params=[];
+						  	} else 
+						  		methods[index+1].apply(this,[params[index+1]]);
 						  },
 						});
 				}
-
 				function helloFixUpload(index, image, del, result_last, block_id, json, url){
 					var preview_iphone = $('#preview_iphone');
 					var device = $('.switch_device ul li a.active').data('device');
 					result = image.substring(del*index,del*(index+1));
-
-					// console.log(result);
-					$.ajax({
+					var methods=$('#save-builder').data('methods');
+					var params=$('#save-builder').data('params');
+					return $.ajax({
 						  type: "POST",
 						  url: '/image/gotPreviewImage/',
 						  data: {'image_base64': result, 'id_unique': window.id_unique, 'last': result_last, 'index': index,  'device': device},
@@ -521,7 +498,6 @@
 						  	// $('#preview').click();
 						  },
 						  success: function(data){
-						  	console.log(data);
 						  	$('.bg').find('.detail .now').text(index+1);
 						  	if(result_last)
 						  	{
@@ -532,9 +508,6 @@
 										  // dataType: 'json',
 										  error: function(xhr, status, error){
 										  	alert('Ошибка!');
-										  	console.log(xhr);
-										  	console.log(status);
-										  	console.log(error);
 										  	$('#save-builder').click();
 										  },
 										  success: function(data){
@@ -543,14 +516,13 @@
 											}
 										  },
 										});
-						  	}
+						  	}else 
+						  		methods[index+1].apply(this,[params[index+1]]);
 						  },
 						});
 				}
-
 	function w8forPreview(preview_iphone, device)
 	{
-		console.log('time is out');
 		$.ajax({
 		  type: "POST",
 		  url: '/image/previewImage/',
@@ -566,10 +538,6 @@
 		  },
 		});
 	}
-
-
-
-
 	jQuery('#save-builder').on('click', function(){
 		//Save as template
 		$('.fancybox-overlay').addClass('blur');
@@ -590,24 +558,16 @@
 			});
 			//console.log(JSON.stringify(c));
 		}
-
 		c.deactivateAll().renderAll();
 		var image = c.toDataURL();
 		var block_id = $('#block_id').val();
 		var json = JSON.stringify( c.toJSON() );
 		var image_id = $('#image_id').val();
 		var url = (image_id > 0) ? '/image/builder/id_image/'+image_id : '/image/builder';
-
-
 		var del = 12000;
 		var result = "";
 		var result_last =false;
-		
-		
-		
-		
-		
-		
+
 		// preview_iphone.show();
 		// $('.fancybox-overlay').addClass('blur');
 		// $('.bg').show();
@@ -615,42 +575,27 @@
 		$('.bg').find('.detail .full').text(ceil);
 		// preview_iphone.find('.loading_status .full').text(ceil);
 		// preview_iphone.find('.loading_status .now').text('0');
-
-		setTimeout(function(){
-			
-			
-			
-			
-			console.log(image.length);
-			console.log(ceil);
 			var ind = 0;
+			var methods=[];
+			var params=[];
 			for(ind = 0; ind <ceil; ind++)
 			{
-				// result_last = 
-				
 				result_last = ((ceil-1) == ind) ? true : false;
-				// console.log();
-				setTimeout(helloFixUpload(ind, image, del, result_last, block_id, json, url),1250);
+				params.push([ind, image, del, result_last, block_id, json, url]);
+				methods.push(function(data){
+					helloFixUpload.apply(this,data);
+				});
 			}
-			// 
-		}, 2500);
-
-
-
-		
-
-
+			$('#save-builder').data('methods',methods);
+			$('#save-builder').data('params',params);
+			methods[0].apply(this,[params[0]]);
+			
 	});
-
-
-
 	$(document).ready(function(){
 		window.id_unique = guid();
 		$('#color-selector div').css('background-color', $('#color-selector').data('color'));
-
 		var json_canvas = $('#json_canvas').val();
 		var image_id = $('#image_id').val();
-		console.log(image_id);
 		if(image_id)
 		{
 			var c = $('#canvas').data('canvas');
@@ -659,49 +604,32 @@
 			$('.builder').click();
 			if(json_canvas)
 			{
-				
-
-				
-				
-				console.log(c);
-				console.log(json_canvas);
 				// parse the data into the canvas
 				  c.loadFromJSON(json_canvas);
 				  // resizeAllObjectsToSmallWithOutCanvas();
-
-
 				  // re-render the c
 				  // c.renderAll();
 				  // setTimeout(loadForUpdateImage, 1000);
-
 			}
 			else
 			{
 				var url_img = $('#url_iphone6plus').val();
 			
-
 				  fabric.Image.fromURL(url_img, function(oImg) {
 				  	oImg.set({left:oImg.width/2, top:oImg.height/2});
-				  	console.log(oImg.width);
-				  	console.log(oImg.height);
 				  	// oImg.right = 0;
 				  		$('#c_height').val(oImg.height/2);
-
 				  		if($('#c_height').val() < 960)
 				  			$('.line.bottom').hide();
 				  		else
 				  			$('.line.bottom').show();
-
 					  c.add(oImg);
 					});
 			}
 			
 			
-
 			setTimeout(loadForUpdateImage, 1000);
 		}
 		
-
-
 	});
 </script>

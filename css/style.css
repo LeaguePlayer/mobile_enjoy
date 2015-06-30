@@ -193,6 +193,8 @@ a.builder{
 	background-color: #fff;
 	width: 100%;
 	margin-bottom: 25px;
+	position: relative;
+	top:-35px;
 }
 #preview_iphone .switch_device ul
 {
@@ -361,6 +363,32 @@ a.builder{
 #canvas-container .line.bottom
 {
 	bottom: 72px;
+}
+
+#settings .settings_canvas .row
+{
+	width: 140px;
+}
+#settings .settings_canvas .row input
+{
+	width: 134px;
+}
+#settings .settings_canvas .row.with_adaptive
+{
+	width: 20px;
+}
+#settings .settings_canvas .row.with_adaptive .adaptive
+{
+	cursor: pointer;
+	text-decoration: none;
+	color:#000;
+	height: 20px;
+	width: 20px;
+	position: relative;
+	top:13px;
+	background: url(../img/arrows.png) no-repeat;
+	display: inline-block;
+
 }
 
 output { 

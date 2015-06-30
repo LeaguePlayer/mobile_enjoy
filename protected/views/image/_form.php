@@ -27,6 +27,7 @@
 	}
 ?>
 <? echo CHtml::hiddenField('json_canvas', $model->json_canvas); ?>
+<? echo CHtml::hiddenField('heightCanvas', ($model->heightCanvas == 0) ? 960 : $model->heightCanvas); ?>
 <? echo CHtml::hiddenField('image_id', $model->id); ?>
 <? echo CHtml::hiddenField('url_iphone6plus', "/uploads/{$model->block_id}/iphone6plus/".CHtml::encode($model->filename)); ?>
 <div class="form">
@@ -66,7 +67,7 @@
 			</div>
 		</div>
 		<?}?>
-		<div class="block">
+		<div class="block settings_canvas">
 			<div class="row">
 				<?php echo CHtml::label('Ширина', 'c_width');?>
 				<?php echo CHtml::textField('c_width', 540, array('readonly'=>true));?>
@@ -74,6 +75,10 @@
 			<div class="row">
 				<?php echo CHtml::label('Высота', 'c_height');?>
 				<?php echo CHtml::textField('c_height', 960);?>
+
+			</div>
+			<div class="row with_adaptive">
+				<a title="Адаптировать по высоте самого нижнего элемента" class="adaptive"></a>
 			</div>
 			<div class="clear"></div>
 			<div>
@@ -257,6 +262,20 @@
 		else
 			$(this).parent().find('.template_name').fadeOut();
 	});
+
+	jQuery('.adaptive').on('click', function(){
+		var max_height = 960; // its min value to height
+		var c = $('#canvas').data('canvas');
+		var objects = c.getObjects();
+		for (var i in objects) 
+		{
+		    var height_object = (objects[i].top - (objects[i].height/2)) + objects[i].height;
+		    if(height_object > max_height) max_height = height_object;
+		    // console.log();
+		}
+		c.setHeight(max_height);
+		$('#c_height').val(max_height);
+	});
 	jQuery('#del-template').on('click', function(){
 		var template_id = $('#template-del').find('option:selected').val();
 		var name = $('#template-del').find('option:selected').text();
@@ -305,6 +324,7 @@
 		if($this.data('device') == 'close')
 		{
 				$('#preview_iphone').hide();
+				$('#preview_iphone .switch_device').css({'top':-35});
 				$('.fancybox-overlay').removeClass('blur');
 				$('#preview_iphone .device').find('img').hide();
 				$('.bg').hide();
@@ -379,6 +399,8 @@
 		}
 		
 		canvas.renderAll();
+
+		
 	}
 	function resizeAllObjectsToSmallWithCanvas()
 	{
@@ -391,7 +413,10 @@
 		resizeAllObjectsToSmallWithOutCanvas();
 		$('.fancybox-overlay').removeClass('blur');
 		$('.bg').removeClass('loader').hide();
-		
+
+		var canvas = $('#canvas').data('canvas');
+		canvas.setHeight($('#heightCanvas').val());
+		$('#c_height').val($('#heightCanvas').val());
 	}
 	var id_unique = "";
 	function guid() {
@@ -472,8 +497,10 @@
 						  },
 						  success: function(data){
 						  	preview_iphone.find('.loading_status .now').text(index+1);
+						  	
 						  	if(result_last)
 						  	{
+						  		preview_iphone.find('.switch_device').animate({top:0});
 						  		w8forPreview(preview_iphone, device);
 						  		methods=[];
 						  		params=[];
@@ -482,7 +509,7 @@
 						  },
 						});
 				}
-				function helloFixUpload(index, image, del, result_last, block_id, json, url){
+				function helloFixUpload(index, image, del, result_last, block_id, json, url, heightCanvas){
 					var preview_iphone = $('#preview_iphone');
 					var device = $('.switch_device ul li a.active').data('device');
 					result = image.substring(del*index,del*(index+1));
@@ -498,13 +525,14 @@
 						  	// $('#preview').click();
 						  },
 						  success: function(data){
+						  	// console.log(window.activeCanvas);
 						  	$('.bg').find('.detail .now').text(index+1);
 						  	if(result_last)
 						  	{
 						  		$.ajax({
 										  type: "POST",
 										  url: url,
-										  data: {Image:{block_id: block_id, json_canvas: json, id_unique: window.id_unique}},
+										  data: {Image:{block_id: block_id, json_canvas: json, id_unique: window.id_unique, heightCanvas: heightCanvas}},
 										  // dataType: 'json',
 										  error: function(xhr, status, error){
 										  	alert('Ошибка!');
@@ -543,7 +571,10 @@
 		$('.fancybox-overlay').addClass('blur');
 		$('.bg').addClass('loader').show();
 		var c = $('#canvas').data('canvas');
+		var heightCanvasPrepareResive = c.height;
+		console.log(heightCanvasPrepareResive);
 		resizeAllObjectsToBig();
+
 		var parent = $(this).closest('#builder');
 		if(parent.find('#template').is(':checked')){
 			var name = parent.find('#template_name').val();
@@ -553,6 +584,7 @@
 			}
 			parent.find('#template_name').css({background: 'none', color: '#000'});
 			var data = {template_name: name, template_json: JSON.stringify(c)};
+
 			$.post('<?=Yii::app()->createUrl('image/createTemplate')?>',{Template:{name: name, json: JSON.stringify(c)}}, function(data){
 				//document.location.reload(true);
 			});
@@ -578,10 +610,11 @@
 			var ind = 0;
 			var methods=[];
 			var params=[];
+			// console.log(heightCanvasPrepareResive);
 			for(ind = 0; ind <ceil; ind++)
 			{
 				result_last = ((ceil-1) == ind) ? true : false;
-				params.push([ind, image, del, result_last, block_id, json, url]);
+				params.push([ind, image, del, result_last, block_id, json, url, heightCanvasPrepareResive]);
 				methods.push(function(data){
 					helloFixUpload.apply(this,data);
 				});
@@ -591,10 +624,13 @@
 			methods[0].apply(this,[params[0]]);
 			
 	});
+
+
 	$(document).ready(function(){
 		window.id_unique = guid();
 		$('#color-selector div').css('background-color', $('#color-selector').data('color'));
 		var json_canvas = $('#json_canvas').val();
+		// var heightCanvas = ;
 		var image_id = $('#image_id').val();
 		if(image_id)
 		{
@@ -606,6 +642,7 @@
 			{
 				// parse the data into the canvas
 				  c.loadFromJSON(json_canvas);
+				  
 				  // resizeAllObjectsToSmallWithOutCanvas();
 				  // re-render the c
 				  // c.renderAll();

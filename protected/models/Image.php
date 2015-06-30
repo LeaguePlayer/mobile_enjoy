@@ -27,7 +27,7 @@ class Image extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('filename, block_id', 'required'),
-			array('block_id, sort', 'numerical', 'integerOnly'=>true),
+			array('block_id, sort, heightCanvas', 'numerical', 'integerOnly'=>true),
 			array('filename', 'length', 'max'=>255),
 			array('json_canvas', 'safe'),
 			//array('filename', 'file', 'safe' => true, 'types'=>'jpg, jpeg, gif, png'),

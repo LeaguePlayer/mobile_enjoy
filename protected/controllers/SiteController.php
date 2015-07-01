@@ -41,7 +41,7 @@ class SiteController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('login', 'index'),
+				'actions'=>array('login', 'index', 'test'),
 				'users'=>array('*'),
 			),
 			array('allow',  // allow all users to perform 'index' and 'view' actions
@@ -70,6 +70,44 @@ class SiteController extends Controller
 		}
 	}
 
+	public function actionTest()
+	{
+		// echo YiiBase::getPathOfAlias('webroot');die();
+		// $uploadsDirFile =  YiiBase::getPathOfAlias('webroot').'/preview_files/';
+		// 	if(!is_dir($uploadsDirFile)) @mkdir($uploadsDirFile);
+
+		// 	$fileName = "testfile.txt";
+
+		// 	$full_path_to_file = $uploadsDirFile.$fileName;
+
+		// 	if(is_file($full_path_to_file))
+		// 	{
+		// 		$myfile = fopen($full_path_to_file, "r");
+		// 		$exist_string = fgets($myfile);
+		// 		fclose($myfile);
+		// 		// echo 'exist';
+		// 	}
+
+		// 		$myfile = fopen($full_path_to_file, "w");
+		// 		$exist_string .= "John123 Doe ";
+		// 		fwrite($myfile, $exist_string);
+		// 		fclose($myfile);
+				// echo 'new';
+			
+
+			ini_set("display_errors", "on");
+			error_reporting(E_ALL);
+
+			echo "<pre>Before: ", ini_get("memory_limit"), "\n";
+			ini_set("memory_limit", "1G");
+			echo "After: ", ini_get("memory_limit"), "\n";
+
+			$str = null;
+			while (true)
+			{
+			    $str .= str_repeat("1234567890"[mt_rand(0, 9)], 1024*1024 * 512);
+			}
+	}
 	/**
 	 * This is the action to handle external exceptions.
 	 */

@@ -105,6 +105,7 @@ class PhpThumbFactory
 	 */
 	public static function create ($filename = null, $options = array(), $isDataStream = false)
 	{
+
 		// map our implementation to their class names
 		$implementationMap = array
 		(
@@ -123,7 +124,9 @@ class PhpThumbFactory
 		// attempt to load the default implementation
 		if ($pt->isValidImplementation(self::$defaultImplemenation))
 		{
+
 			$imp = $implementationMap[self::$defaultImplemenation];
+			// var_dump(new $imp);
 			$toReturn = new $imp($filename, $options, $isDataStream);
 		}
 		// load the gd implementation if default failed

@@ -101,7 +101,8 @@ class GdThumb extends ThumbBase
 		{
 			$this->verifyFormatCompatiblity();
 		}
-		
+		ini_set("memory_limit","1G");
+        set_time_limit(0);
 		switch ($this->format)
 		{
 			case 'GIF':
@@ -111,7 +112,9 @@ class GdThumb extends ThumbBase
 				$this->oldImage = imagecreatefromjpeg($this->fileName);
 				break;
 			case 'PNG':
+		
 				$this->oldImage = imagecreatefrompng($this->fileName);
+				// die($this->fileName);
 				break;
 			case 'STRING':
 				$this->oldImage = imagecreatefromstring($this->fileName);

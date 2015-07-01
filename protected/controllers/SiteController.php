@@ -95,18 +95,18 @@ class SiteController extends Controller
 				// echo 'new';
 			
 
-			ini_set("display_errors", "on");
-			error_reporting(E_ALL);
+			// ini_set("display_errors", "on");
+			// error_reporting(E_ALL);
 
-			echo "<pre>Before: ", ini_get("memory_limit"), "\n";
-			ini_set("memory_limit", "1G");
-			echo "After: ", ini_get("memory_limit"), "\n";
+			// echo "<pre>Before: ", ini_get("memory_limit"), "\n";
+			// ini_set("memory_limit", "1G");
+			// echo "After: ", ini_get("memory_limit"), "\n";
 
-			$str = null;
-			while (true)
-			{
-			    $str .= str_repeat("1234567890"[mt_rand(0, 9)], 1024*1024 * 512);
-			}
+			// $str = null;
+			// while (true)
+			// {
+			//     $str .= str_repeat("1234567890"[mt_rand(0, 9)], 1024*1024 * 512);
+			// }
 	}
 	/**
 	 * This is the action to handle external exceptions.

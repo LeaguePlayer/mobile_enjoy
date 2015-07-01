@@ -94,7 +94,7 @@ class SiteController extends Controller
 		// 		fclose($myfile);
 				// echo 'new';
 			
-
+echo 'd';
 			ini_set("display_errors", "on");
 			error_reporting(E_ALL);
 

@@ -1,58 +1,10 @@
 <?php
 
-class SiteController extends Controller
+class SiteController extends FrontController
 {
 	/**
 	 * Declares class-based actions.
 	 */
-	public function actions()
-	{
-		return array(
-			// captcha action renders the CAPTCHA image displayed on the contact page
-			'captcha'=>array(
-				'class'=>'CCaptchaAction',
-				'backColor'=>0xFFFFFF,
-			),
-			// page action renders "static" pages stored under 'protected/views/site/pages'
-			// They can be accessed via: index.php?r=site/page&view=FileName
-			'page'=>array(
-				'class'=>'CViewAction',
-			),
-		);
-	}
-
-	/**
-	 * @return array action filters
-	 */
-	public function filters()
-	{
-		return array(
-			'accessControl', // perform access control for CRUD operations
-			'postOnly + delete', // we only allow deletion via POST request
-		);
-	}
-
-	/**
-	 * Specifies the access control rules.
-	 * This method is used by the 'accessControl' filter.
-	 * @return array access control rules
-	 */
-	public function accessRules()
-	{
-		return array(
-			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('login', 'index', 'test'),
-				'users'=>array('*'),
-			),
-			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('login', 'logout'),
-				'users'=>array('admin'),
-			),
-			array('deny',  // deny all users
-				'users'=>array('*'),
-			),
-		);
-	}
 	/**
 	 * This is the default 'index' action that is invoked
 	 * when an action is not explicitly requested by users.
@@ -94,19 +46,19 @@ class SiteController extends Controller
 		// 		fclose($myfile);
 				// echo 'new';
 			
-echo 'd';
-			ini_set("display_errors", "on");
-			error_reporting(E_ALL);
+// echo 'd';
+// 			ini_set("display_errors", "on");
+// 			error_reporting(E_ALL);
 
-			echo "<pre>Before: ", ini_get("memory_limit"), "\n";
-			ini_set("memory_limit", "1G");
-			echo "After: ", ini_get("memory_limit"), "\n";
+// 			echo "<pre>Before: ", ini_get("memory_limit"), "\n";
+// 			ini_set("memory_limit", "1G");
+// 			echo "After: ", ini_get("memory_limit"), "\n";
 
-			$str = null;
-			while (true)
-			{
-			    $str .= str_repeat("1234567890"[mt_rand(0, 9)], 1024*1024 * 512);
-			}
+// 			$str = null;
+// 			while (true)
+// 			{
+// 			    $str .= str_repeat("1234567890"[mt_rand(0, 9)], 1024*1024 * 512);
+// 			}
 	}
 	/**
 	 * This is the action to handle external exceptions.

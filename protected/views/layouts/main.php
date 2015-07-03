@@ -34,7 +34,7 @@
 				array('label'=>'Блоки', 'url'=>array('/block/'), 'visible'=>!Yii::app()->user->isGuest),
 				array('label'=>'Администратор', 'url'=>array('/user/update/1'), 'visible'=>!Yii::app()->user->isGuest),
 				array('label'=>'Руководство', 'url'=>array('/page/2'), 'visible'=>!Yii::app()->user->isGuest),
-				array('label'=>'Войти', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
+				array('label'=>'Войти', 'url'=>array('/user/login'), 'visible'=>Yii::app()->user->isGuest),
 				array('label'=>'Выйти ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
 			),
 		)); ?>

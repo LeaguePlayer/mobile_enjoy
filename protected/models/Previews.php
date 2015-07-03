@@ -27,7 +27,7 @@ class Previews extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('id_unique, data_image', 'required'),
+			array('id_unique', 'required'),
 			array('id_unique', 'length', 'max'=>255),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
@@ -100,13 +100,35 @@ class Previews extends CActiveRecord
 
 	public function getFullImage()
 	{
-		$result = "";
 		$ar = array();
-		$ar = unserialize($this->data_image);
-		ksort($ar);
-		foreach($ar as $a)
-			$result .= $a;
 
+		$uploadsDirFile =  YiiBase::getPathOfAlias('webroot').'/preview_files/';
+			if(!is_dir($uploadsDirFile)) @mkdir($uploadsDirFile);
+
+			$fileName = "{$this->id_unique}.txt";
+
+			$full_path_to_file = $uploadsDirFile.$fileName;
+
+			if(is_file($full_path_to_file))
+			{
+				$myfile = fopen($full_path_to_file, "r");
+				$exist_string = fgets($myfile);
+				fclose($myfile);
+				
+				$ar = unserialize($exist_string);
+				
+			
+
+
+				$result = "";
+				
+				// $ar = unserialize($this->data_image);
+				ksort($ar);
+				foreach($ar as $a)
+					$result .= $a;
+
+
+			}
 
 		return $result;
 

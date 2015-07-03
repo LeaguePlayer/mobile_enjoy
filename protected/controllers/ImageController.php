@@ -276,10 +276,11 @@ class ImageController extends Controller
 		
 		$device = $_POST['device'];
 		$id_unique = $_POST['id_unique'];
+		// $id_unique = "4e08e2a5-965d-4850-1bbe-f389227fcf92";
 		$base64img = $_POST['image_base64'];
 		$index = $_POST['index'];
 		$last = ($_POST['last']=='true') ? true : false;
-
+		$ar = array();
 
 
 		$model = Previews::model()->find("id_unique = :id_unique" , array(':id_unique' =>$id_unique));
@@ -290,18 +291,46 @@ class ImageController extends Controller
 		$model->id_unique = $id_unique;
 		$model->create_date = date("Y-m-d H:i:s");
 
-		$ar = array();
-		$ar = unserialize($model->data_image);
-		$ar[$index] = $base64img;
-		$model->data_image = serialize($ar);
+		
+
+		$uploadsDirFile =  YiiBase::getPathOfAlias('webroot').'/preview_files/';
+			if(!is_dir($uploadsDirFile)) @mkdir($uploadsDirFile);
+
+			$fileName = "{$model->id_unique}.txt";
+
+			$full_path_to_file = $uploadsDirFile.$fileName;
+
+			if(is_file($full_path_to_file))
+			{
+				$myfile = fopen($full_path_to_file, "r");
+				$exist_string = fgets($myfile);
+				fclose($myfile);
+				// echo 'exist';
+				
+				$ar = unserialize($exist_string);
+				
+			}
+
+				$ar[$index] = $base64img;
+				$prepare = serialize($ar);
+
+				$myfile = fopen($full_path_to_file, "w");
+				// $exist_string = "John123 Doe ";
+				fwrite($myfile, $prepare);
+				fclose($myfile);
 
 		// $model = Previews::model()->find("id_unique = :id_unique" , array(':id_unique' =>"abcd"));
 		// die();
+				// $model = Previews::model()->find("id_unique = :id_unique" , array(':id_unique' =>"c1a71e7c-368f-93d5-d288-cf1b99858e20"));
+				// $last=true;
+
 		if($model->save() && $last)
 		// if(1==1)
 		{
 // echo $model->fullImage;
 // 			return true;
+			// echo "<img src='{$model->fullImage}' />";
+			// die();
 			$uploadsDir =  YiiBase::getPathOfAlias('webroot').$this->uploadsDirName.'previews';
 			if(!is_dir($uploadsDir)) @mkdir($uploadsDir);
 
@@ -322,11 +351,15 @@ class ImageController extends Controller
 	        $file = $uploadsDir . '/preview.png';//. $format[1];
 
 	        file_put_contents($file, $data);
-// var_dump($file);die();
+
+
 
 	        
 
 	        $thumb = Yii::app()->phpThumb->create($file);
+
+	         // var_dump($thumb);
+	         // die();
 
 	        $size = getimagesize($file);
 

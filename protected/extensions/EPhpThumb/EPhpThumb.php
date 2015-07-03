@@ -41,6 +41,7 @@ class EPhpThumb extends CComponent
      */
     public function create($filePath)
     {
+        // var_dump(EPhpThumb::thumbFactory($filePath));
         return new EThumbnail(EPhpThumb::thumbFactory($filePath));
     }
         
@@ -51,7 +52,9 @@ class EPhpThumb extends CComponent
      */
     protected static function thumbFactory($filePath)
     {
+
         try{
+            // var_dump(new PhpThumbFactory);
             return PhpThumbFactory::create($filePath,self::$_phpThumbOptions);
         }
         catch (Exception $e)

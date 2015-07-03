@@ -1,6 +1,6 @@
 <?php
 
-class PurchaseController extends Controller
+class PurchaseController extends FrontController
 {
 	public function actionVerify(){
 		header('Content-type: application/json');			

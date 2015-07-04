@@ -19,7 +19,6 @@ $this->breadcrumbs = array(
 <div class="row-fluid">
 
     <div class="span6">
-
         <h3>
             <?php echo Yii::t('AuthModule.main', 'Permissions'); ?>
             <small><?php echo Yii::t('AuthModule.main', 'Items assigned to this user'); ?></small>
@@ -68,3 +67,11 @@ $this->breadcrumbs = array(
     </div>
 
 </div>
+<style type="text/css">
+  .icon-remove{
+    background: url(/media/del.png);
+    width:24px;
+    height: 24px;
+    display: block;
+  }
+</style>

@@ -36,8 +36,10 @@ $this->breadcrumbs = array(
             'header' => Yii::t('AuthModule.main', 'Assigned items'),
             'class' => 'AuthAssignmentItemsColumn',
         ),
+
         array(
-            'class' => 'AuthAssignmentViewColumn',
+            'header'=>'Действия',
+            'class' => 'AuthAssignmentRevokeColumn',
         ),
     ),
 )); ?>

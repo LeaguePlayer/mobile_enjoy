@@ -100,7 +100,7 @@ class AuthModule extends CWebModule
      */
     public function registerCss()
     {
-        Yii::app()->clientScript->registerCssFile($this->getAssetsUrl() . '/css/auth.css');
+        Yii::app()->clientScript->registerCssFile($this->getAssetsUrl() . '/css/auth.css?v=2');
     }
 
     /**

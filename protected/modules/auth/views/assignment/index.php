@@ -8,7 +8,7 @@ $this->breadcrumbs = array(
 ?>
 
 <h1><?php echo Yii::t('AuthModule.main', 'Assignments'); ?></h1>
-<ul id="yw2" class="nav nav-pills" role="menu">
+<!-- <ul id="yw2" class="nav nav-pills" role="menu">
     <li class="active" role="menuitem">
         <a tabindex="-1" href="/auth/assignment/index">Соответствия</a>
     </li>
@@ -21,7 +21,7 @@ $this->breadcrumbs = array(
     <li role="menuitem">
         <a tabindex="-1" href="/auth/operation/index">Операции</a>
     </li>
-</ul>
+</ul> -->
 <?php $this->widget('bootstrap.widgets.TbGridView', array(
     'type' => 'striped hover',
     'dataProvider' => $dataProvider,

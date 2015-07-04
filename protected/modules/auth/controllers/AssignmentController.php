@@ -60,6 +60,7 @@ class AssignmentController extends AuthController
 		$authItemDp->setAuthItems($authItems);
 
 		$assignmentOptions = $this->getAssignmentOptions($id);
+		unset($assignmentOptions['Операции']);
 		if (!empty($assignmentOptions))
 			$assignmentOptions = array_merge(array('' => Yii::t('AuthModule.main', 'Select item') . ' ...'), $assignmentOptions);
 
@@ -114,7 +115,7 @@ class AssignmentController extends AuthController
 		/* @var $am CAuthManager|AuthBehavior */
 		$am = Yii::app()->authManager;
 
-		$assignments = $am->getAuthAssignments($userId);
+		$assignments = $am->getAuthAssignments($userId,$operations=true);
 		$assignedItems = array_keys($assignments);
 
 		/* @var $authItems CAuthItem[] */

@@ -84,9 +84,11 @@ class User extends CActiveRecord
 
 	public function afterSave(){
 		parent::afterSave();
-		$am = Yii::app()->getAuthManager();
-		$am->assign('default', $this->id);
-		$am->save();
+		if ($this->new){
+			$am = Yii::app()->getAuthManager();
+			$am->assign('default', $this->id);
+			$am->save();
+		}
 	}
 	/**
 	 * @return array relational rules.

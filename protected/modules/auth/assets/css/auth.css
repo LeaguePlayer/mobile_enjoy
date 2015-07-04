@@ -38,3 +38,9 @@ body.fix-menu {
 .auth-module .assignment-items-column {
     width: 580px;
 }
+.icon-remove,.icon-trash{
+    background: url(../img/del.png);
+    width:24px;
+    height: 24px;
+    display: block;
+}

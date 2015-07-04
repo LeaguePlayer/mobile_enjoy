@@ -30,12 +30,6 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'superuser'); ?>
-		<?php echo $form->dropDownList($model,'superuser',User::itemAlias('AdminStatus')); ?>
-		<?php echo $form->error($model,'superuser'); ?>
-	</div>
-
-	<div class="row">
 		<?php echo $form->labelEx($model,'status'); ?>
 		<?php echo $form->dropDownList($model,'status',User::itemAlias('UserStatus')); ?>
 		<?php echo $form->error($model,'status'); ?>

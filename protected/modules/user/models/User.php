@@ -28,6 +28,9 @@ class User extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * @return CActiveRecord the static model class
 	 */
+
+	protected $new;
+
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
@@ -72,6 +75,19 @@ class User extends CActiveRecord
 		):array()));
 	}
 
+	public function beforeSave(){
+
+		$this->new=$this->isNewRecord;
+		$this->superuser=1;
+		return parent::beforeSave();
+	}
+
+	public function afterSave(){
+		parent::afterSave();
+		$am = Yii::app()->getAuthManager();
+		$am->assign('default', $this->id);
+		$am->save();
+	}
 	/**
 	 * @return array relational rules.
 	 */

@@ -19,7 +19,6 @@ $this->menu=array(
 <?php
  
 	$attributes = array(
-		'id',
 		'username',
 	);
 	
@@ -36,11 +35,10 @@ $this->menu=array(
 	}
 	
 	array_push($attributes,
-		'password',
 		'email',
-		'activkey',
 		'create_at',
 		'lastvisit_at',
+		'pass',
 		array(
 			'name' => 'superuser',
 			'value' => User::itemAlias("AdminStatus",$model->superuser),

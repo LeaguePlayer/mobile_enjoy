@@ -31,6 +31,9 @@ abstract class AuthController extends Controller
 		parent::init();
 		$this->layout = $this->module->defaultLayout;
 		$this->menu = $this->getSubMenu();
+
+		if (Yii::app()->user->isAdmin===false)
+			throw new CHttpException(403, 'У вас не достаточно прав доступа');
 	}
 
 	/**

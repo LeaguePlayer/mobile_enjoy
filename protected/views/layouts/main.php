@@ -28,17 +28,37 @@
 	</div><!-- header -->
 
 	<div id="mainmenu">
+		<?
+			$items=array(
+				array('label'=>'Описание', 'url'=>array('/page/1')),
+				array('label'=>'Блоки', 'url'=>array('/block/')),
+				array('label'=>'Руководство', 'url'=>array('/page/2')),
+				array('label'=>'Пользователи', 'url'=>array('/user')),
+				array('label'=>'Права доступа', 'url'=>array('/auth')),
+				
+			);
+			
+			$urls=array(
+				array('url'=>'page.view'),
+				array('url'=>'block.index'),
+				array('url'=>'page.view'),
+				array('url'=>'user.index'),
+				array('url'=>'auth.index'),
+			);
+
+			$menu=array();
+			foreach ($urls as $key => $data) {
+				if (Yii::app()->user->checkAccess($data['url']))
+					$menu[]=$items[$key];
+			}
+			if (Yii::app()->user->isGuest)
+				$menu[]=array('label'=>'Войти', 'url'=>array('/user/login'));
+			$menu[]=array('label'=>'Выйти ('.Yii::app()->user->name.')', 'url'=>array('/user/logout'));
+		?>
 		<?php $this->widget('zii.widgets.CMenu',array(
-			'items'=>array(
-				array('label'=>'Описание', 'url'=>array('/page/1'), 'visible'=>!Yii::app()->user->isGuest),
-				array('label'=>'Блоки', 'url'=>array('/block/'), 'visible'=>!Yii::app()->user->isGuest),
-				array('label'=>'Руководство', 'url'=>array('/page/2'), 'visible'=>!Yii::app()->user->isGuest),
-				array('label'=>'Пользователи', 'url'=>array('/user'), 'visible'=>!Yii::app()->user->isGuest),
-				array('label'=>'Права доступа', 'url'=>array('/auth'), 'visible'=>!Yii::app()->user->isGuest),
-				array('label'=>'Войти', 'url'=>array('/user/login'), 'visible'=>Yii::app()->user->isGuest),
-				array('label'=>'Выйти ('.Yii::app()->user->name.')', 'url'=>array('/user/logout'), 'visible'=>!Yii::app()->user->isGuest)
-			),
+			'items'=>$menu
 		)); ?>
+
 	</div><!-- mainmenu -->
 	<?php if(isset($this->breadcrumbs)):?>
 		<?php $this->widget('zii.widgets.CBreadcrumbs', array(

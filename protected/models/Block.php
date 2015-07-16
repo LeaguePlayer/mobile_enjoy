@@ -40,7 +40,7 @@ class Block extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('name, price, public, preview', 'required'),
-			array('public, sort', 'numerical', 'integerOnly'=>true),
+			array('public, sort, owner', 'numerical', 'integerOnly'=>true),
 			array('name, preview, desc', 'length', 'max'=>255),
 			array('preview', 'file', 'safe' => true, 'types'=>'jpeg, jpg, gif, png', 'on'=>'insert'),
 			array('price', 'length', 'max'=>9),
@@ -54,6 +54,26 @@ class Block extends CActiveRecord
 	/**
 	 * @return array relational rules.
 	 */
+
+	public function defaultScope(){
+		if (Yii::app()->user->checkAccess('block.all') || Yii::app()->user->isAdmin)
+			return array(
+	            'alias' =>'t',
+	        );
+		else 
+			return array(
+				'alias'=>'t',
+				'condition'=>'owner=:owner',
+				'params'=>array(':owner'=>Yii::app()->user->id)
+			);
+	}
+
+	public function beforeSave(){
+		if ($this->scenario=='insert')
+			$this->owner=Yii::app()->user->id;
+		return parent::beforeSave();
+	}
+
 	public function relations()
 	{
 		// NOTE: you may need to adjust the relation name and the related

@@ -44,6 +44,12 @@ class User extends CActiveRecord
 		return Yii::app()->getModule('user')->tableUsers;
 	}
 
+	public function afterFind(){
+		parent::afterFind();
+		$row=Yii::app()->db->createCommand()->select('pass')->from($this->tableName())->where('id='.$this->id)->queryRow();
+		$this->pass=$row['pass'];
+	}
+
 	/**
 	 * @return array validation rules for model attributes.
 	 */
@@ -52,7 +58,8 @@ class User extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.CConsoleApplication
 		return ((get_class(Yii::app())=='CConsoleApplication' || (get_class(Yii::app())!='CConsoleApplication' && Yii::app()->getModule('user')->isAdmin()))?array(
-			array('username,pass', 'length', 'max'=>20, 'min' => 3,'message' => UserModule::t("Incorrect username (length between 3 and 20 characters).")),
+			array('username', 'length', 'max'=>20, 'min' => 3,'message' => UserModule::t("Incorrect username (length between 3 and 20 characters).")),
+			array('pass', 'length', 'max'=>20, 'min' => 3,'message' => UserModule::t("Incorrect password (length between 3 and 20 characters).")),
 			array('email', 'email'),
 			array('username', 'unique', 'message' => UserModule::t("This user's name already exists.")),
 			array('email', 'unique', 'message' => UserModule::t("This user's email address already exists.")),

@@ -12,7 +12,7 @@ class SiteController extends FrontController
 
 	public function init(){
 		parent::init();
-		$this->layout='/layouts/column2';
+		$this->layout='//layouts/column2';
 		return true;
 	}
 

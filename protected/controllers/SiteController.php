@@ -72,7 +72,6 @@ class SiteController extends FrontController
 	 */
 	public function actionError()
 	{
-		die('123123');
 		if($error=Yii::app()->errorHandler->error)
 		{
 			if(Yii::app()->request->isAjaxRequest)

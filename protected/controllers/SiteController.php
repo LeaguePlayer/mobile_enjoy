@@ -9,6 +9,13 @@ class SiteController extends FrontController
 	 * This is the default 'index' action that is invoked
 	 * when an action is not explicitly requested by users.
 	 */
+
+	public function init(){
+		parent::init();
+		$this->layout='/layouts/column2';
+		return true;
+	}
+
 	public function actionIndex()
 	{
 		// renders the view file 'protected/views/site/index.php'
@@ -65,6 +72,7 @@ class SiteController extends FrontController
 	 */
 	public function actionError()
 	{
+		die('123123');
 		if($error=Yii::app()->errorHandler->error)
 		{
 			if(Yii::app()->request->isAjaxRequest)

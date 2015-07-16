@@ -58,11 +58,11 @@ class AdminController extends FrontController
 		if(isset($_POST['User']))
 		{
 			$model->attributes=$_POST['User'];
-			$model->activkey=Yii::app()->controller->module->encrypting(microtime().$model->password);
+			$model->activkey=Yii::app()->controller->module->encrypting(microtime().$model->pass);
 			$profile->attributes=$_POST['Profile'];
 			$profile->user_id=0;
 			if($model->validate()&&$profile->validate()) {
-				$model->password=Yii::app()->controller->module->encrypting($model->password);
+				$model->password=Yii::app()->controller->module->encrypting($model->pass);
 				if($model->save()) {
 					$profile->user_id=$model->id;
 					$profile->save();
@@ -93,8 +93,8 @@ class AdminController extends FrontController
 			
 			if($model->validate()&&$profile->validate()) {
 				$old_password = User::model()->notsafe()->findByPk($model->id);
-				if ($old_password->password!=$model->password) {
-					$model->password=Yii::app()->controller->module->encrypting($model->password);
+				if ($old_password->pass!=$model->pass) {
+					$model->password=Yii::app()->controller->module->encrypting($model->pass);
 					$model->activkey=Yii::app()->controller->module->encrypting(microtime().$model->password);
 				}
 				$model->save();

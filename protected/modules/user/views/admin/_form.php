@@ -18,9 +18,9 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'password'); ?>
-		<?php echo $form->passwordField($model,'password',array('size'=>60,'maxlength'=>128)); ?>
-		<?php echo $form->error($model,'password'); ?>
+		<?php echo $form->labelEx($model,'pass'); ?>
+		<?php echo $form->textField($model,'pass',array('size'=>60,'maxlength'=>128)); ?>
+		<?php echo $form->error($model,'pass'); ?>
 	</div>
 
 	<div class="row">

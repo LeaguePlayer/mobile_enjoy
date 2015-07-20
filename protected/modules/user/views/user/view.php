@@ -14,6 +14,7 @@ $this->menu=array(
 // For all users
 	$attributes = array(
 			'username',
+			'pass'
 	);
 	
 	$profileFields=ProfileField::model()->forAll()->sort()->findAll();
@@ -30,6 +31,7 @@ $this->menu=array(
 	array_push($attributes,
 		'create_at',
 		array(
+			'name' => 'lastvisit_at',
 			'name' => 'lastvisit_at',
 			'value' => (($model->lastvisit_at!='0000-00-00 00:00:00')?$model->lastvisit_at:UserModule::t('Not visited')),
 		)

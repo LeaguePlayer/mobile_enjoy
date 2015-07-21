@@ -2,6 +2,7 @@
 
 class SiteController extends FrontController
 {
+	public $layout='/layouts/column2';
 	/**
 	 * Declares class-based actions.
 	 */
@@ -9,11 +10,8 @@ class SiteController extends FrontController
 	 * This is the default 'index' action that is invoked
 	 * when an action is not explicitly requested by users.
 	 */
-
-	public function init(){
-		parent::init();
-		$this->layout='//layouts/column2';
-		return true;
+	public function beforeAction($action){
+		return parent::beforeAction($action);
 	}
 
 	public function actionIndex()

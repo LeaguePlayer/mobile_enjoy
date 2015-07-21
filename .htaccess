@@ -1,3 +1,5 @@
+Redirect 301 /site/login http://mr.amobile-studio.ru/user/login
+
 RewriteEngine on
 
 RewriteCond %{REQUEST_FILENAME} !-f

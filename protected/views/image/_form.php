@@ -660,7 +660,19 @@
 				  			$('.line.bottom').hide();
 				  		else
 				  			$('.line.bottom').show();
-					  c.add(oImg);
+					  
+					  // c.select(oImg);
+					  // c.on('object:selected', oImg);
+					  
+							
+							c.add(oImg);
+					  setTimeout(function(){
+						// var activeObject = canvas.getActiveObject();
+						var height_canvas = c.height;
+						oImg.set('top', (height_canvas/2)  );
+						c.renderAll();
+					  },1100);
+
 					});
 			}
 			

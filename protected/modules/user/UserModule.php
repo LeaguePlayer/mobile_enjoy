@@ -200,6 +200,17 @@ class UserModule extends CWebModule
 		}
 	}
 
+	public function isAllowedBlock() {
+		$block_allowed_models = AllowedBlockUser::model()->findAll("id_user = :id_user", array(':id_user'=>Yii::app()->user->id));
+		$result = array();
+		foreach($block_allowed_models as $md)
+			$result[] = $md->id_block;
+
+		return $result;
+    }
+
+
+
 	/**
 	 * Return admins.
 	 * @return array syperusers names

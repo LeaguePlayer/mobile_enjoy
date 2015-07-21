@@ -66,4 +66,10 @@ class WebUser extends CWebUser
         return Yii::app()->getModule('user')->isAdmin();
     }
 
+    public function isAllowedBlock() {
+        return Yii::app()->getModule('user')->isAllowedBlock();
+    }
+
+
+
 }

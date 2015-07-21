@@ -42,7 +42,7 @@ class BlockController extends FrontController
 		);
 
 		$arraySizes = $this->getBlockSize($id);
-
+		
 		$this->render('view',array(
 			'model'=>$this->loadModel($id),
 			'arraySizes'=>$arraySizes

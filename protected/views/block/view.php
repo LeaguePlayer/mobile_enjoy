@@ -11,8 +11,11 @@ $this->menu=array(
 	array('label'=>'Все блоки', 'url'=>array('index')),
 	array('label'=>'Создать блок', 'url'=>array('create')),
 	array('label'=>'Обновить блок', 'url'=>array('update', 'id'=>$model->id)),
-	array('label'=>'Удалить блок', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Are you sure you want to delete this item?'))
+	array('label'=>'Удалить блок', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Are you sure you want to delete this item?')),
+	
 );
+if(Yii::app()->user->checkAccess("allowedBlockUser/admin"))
+	$this->menu[] = array('label'=>'Доступ к блоку', 'url'=>array('allowedBlockUser/admin', 'id'=>$model->id));
 ?>
 
 <h1>Блок - <?php echo $model->name; ?></h1>

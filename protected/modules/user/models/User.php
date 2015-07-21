@@ -102,6 +102,8 @@ class User extends CActiveRecord
 	public function relations()
 	{
         $relations = Yii::app()->getModule('user')->relations;
+        $relations['allow_block'] = array(self::HAS_ONE, 'AllowedBlockUser', 'id_user'); // allowed_block
+
         if (!isset($relations['profile']))
             $relations['profile'] = array(self::HAS_ONE, 'Profile', 'user_id');
         return $relations;

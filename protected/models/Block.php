@@ -56,16 +56,25 @@ class Block extends CActiveRecord
 	 */
 
 	public function defaultScope(){
+		
+
 		if (Yii::app()->user->checkAccess('block.all') || Yii::app()->user->isAdmin)
 			return array(
 	            'alias' =>'t',
 	        );
 		else 
-			return array(
-				'alias'=>'t',
-				'condition'=>'owner=:owner',
-				'params'=>array(':owner'=>Yii::app()->user->id)
-			);
+			{
+				$allowed_blocks = Yii::app()->getModule('user')->isAllowedBlock();
+				$criteria = new CDbCriteria;
+				$criteria->addCondition('owner=:owner');
+				$criteria->alias = 't';
+				$criteria->params = array(':owner'=>Yii::app()->user->id);
+
+				if(!empty($allowed_blocks))
+					$criteria->addInCondition('id',$allowed_blocks,'or');
+
+				return $criteria;
+			}
 	}
 
 	public function beforeSave(){
